@@ -9,8 +9,6 @@ export const Container = styled.button<ContainerProps>`
   height: 38px;
   border: 0;
   outline: none;
-  font-size: 16px;
-  font-weight: 500;
   border-radius: ${({ theme }) => theme.settings.radius};
   padding: ${({ theme }) => `0 ${theme.settings.gutterLg}`};
   display: inline-flex;
