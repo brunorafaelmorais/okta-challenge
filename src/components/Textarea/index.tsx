@@ -10,16 +10,16 @@ import React, {
 import { Container, Error, Label } from './styles';
 import { TypoBody2, TypoCaption } from '../Typography';
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends InputHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   name: string;
 }
 
-const Input: React.FC<InputProps> = ({ name, label, ...rest }) => {
+const Textarea: React.FC<InputProps> = ({ name, label, ...rest }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
   const { fieldName, defaultValue, registerField, error } = useField(name);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     registerField({
@@ -47,7 +47,7 @@ const Input: React.FC<InputProps> = ({ name, label, ...rest }) => {
         </Label>
       )}
       <Container isFilled={isFilled} isFocused={isFocused} hasError={!!error}>
-        <input
+        <textarea
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
           ref={inputRef}
@@ -65,4 +65,4 @@ const Input: React.FC<InputProps> = ({ name, label, ...rest }) => {
   );
 };
 
-export default Input;
+export default Textarea;

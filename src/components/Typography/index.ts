@@ -75,7 +75,7 @@ export const TypoBody2 = styled(TypoBase)`
 export const TypoButton = styled(TypoBase)`
   font-size: 14px;
   font-weight: 500;
-  letter-spacing: 1.25px;
+  letter-spacing: 0.25px;
 `;
 
 export const TypoCaption = styled(TypoBase)`

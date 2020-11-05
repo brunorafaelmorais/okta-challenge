@@ -19,7 +19,7 @@ export const Container = styled.button<ContainerProps>`
   ${({ outlined }) =>
     outlined
       ? css`
-          border: 2px solid #666666;
+          border: 1px solid ${({ theme }) => theme.colors.primary};
           background-color: transparent;
 
           &:not(:hover) {
@@ -42,7 +42,7 @@ export const Container = styled.button<ContainerProps>`
         `};
 
   & + & {
-    margin-left: ${({ theme }) => theme.settings.gutterXs};
+    margin-left: ${({ theme }) => theme.settings.gutterSm};
   }
 
   ${({ fullWidth }) =>
