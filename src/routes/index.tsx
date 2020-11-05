@@ -1,8 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import NoMatch from '../components/NoMatch';
-
+import NotFoundPage from '../pages/NotFound';
 import CampaignsPage from '../pages/Campaigns';
 import CampaignDetailPage from '../pages/CampaignDetail';
 import NewCampaignPage from '../pages/NewCampaign';
@@ -16,7 +15,7 @@ const Routes: React.FC = () => {
       <Route path="/campaigns/new" exact component={NewCampaignPage} />
       <Route path="/campaigns/:id" exact component={CampaignDetailPage} />
       <Route path="/campaigns/:id/new-action" exact component={NewActionPage} />
-      <Route path="*" component={NoMatch} />
+      <Route path="*" component={NotFoundPage} />
     </Switch>
   );
 };
