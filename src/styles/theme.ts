@@ -23,6 +23,6 @@ export default {
     backgroundShade: shade(0.2, '#FFF'),
     backgroundTint: tint(0.2, '#FFF'),
 
-    text: '#333',
+    text: 'rgba(0,0,0,0.87)',
   },
 };
