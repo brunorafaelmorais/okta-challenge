@@ -5,14 +5,15 @@ import './styles/normalize.css';
 
 import Routes from './routes';
 import GlobalStyle from './styles/global';
+import AppProvider from './hooks';
 
 const App: React.FC = () => (
-  <>
-    <GlobalStyle />
-    <BrowserRouter>
+  <BrowserRouter>
+    <AppProvider>
       <Routes />
-    </BrowserRouter>
-  </>
+      <GlobalStyle />
+    </AppProvider>
+  </BrowserRouter>
 );
 
 export default App;

@@ -1,7 +1,11 @@
 import React from 'react';
 
 const CampaignDetail: React.FC = () => {
-  return <div />;
+  return (
+    <div>
+      <span>campaign detail</span>
+    </div>
+  );
 };
 
 export default CampaignDetail;
