@@ -8,8 +8,9 @@ import React, {
 import { useField } from '@unform/core';
 import { MdAddAPhoto } from 'react-icons/md';
 
-import { Container, AddImage, Error, Label } from './styles';
-import { TypoBody2, TypoCaption } from '../Typography';
+import { Container, AddImage, Label } from './styles';
+import { TypoBody2 } from '../Typography';
+import FieldError from '../FieldError';
 
 interface Props {
   name: string;
@@ -78,11 +79,7 @@ const ImageInput: React.FC<InputProps> = ({ name, label, ...rest }) => {
           {...rest}
         />
       </Container>
-      {error && (
-        <Error>
-          <TypoCaption>{error}</TypoCaption>
-        </Error>
-      )}
+      {error && <FieldError text={error} />}
     </>
   );
 };

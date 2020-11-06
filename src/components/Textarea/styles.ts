@@ -48,9 +48,3 @@ export const Container = styled.div<ContainerProps>`
 
   ${props => props.isFilled && css``}
 `;
-
-export const Error = styled.div`
-  color: #f44336;
-  display: block;
-  margin-top: 3px;
-`;

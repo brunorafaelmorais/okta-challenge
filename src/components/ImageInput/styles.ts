@@ -65,9 +65,3 @@ export const AddImage = styled.div`
   width: 50px;
   height: 50px;
 `;
-
-export const Error = styled.div`
-  color: #f44336;
-  display: block;
-  margin-top: 3px;
-`;

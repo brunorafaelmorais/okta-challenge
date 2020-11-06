@@ -7,8 +7,9 @@ import React, {
   useState,
 } from 'react';
 
-import { Container, Error, Label } from './styles';
-import { TypoBody2, TypoCaption } from '../Typography';
+import { Container, Label } from './styles';
+import { TypoBody2 } from '../Typography';
+import FieldError from '../FieldError';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -56,11 +57,7 @@ const Input: React.FC<InputProps> = ({ name, label, ...rest }) => {
           {...rest}
         />
       </Container>
-      {error && (
-        <Error>
-          <TypoCaption>{error}</TypoCaption>
-        </Error>
-      )}
+      {error && <FieldError text={error} />}
     </>
   );
 };
