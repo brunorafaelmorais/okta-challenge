@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 
 import ToastContainer from '../components/ToastContainer';
 
-interface ToastContextData {
+interface ToastCtxData {
   addToast(message: Omit<ToastMessage, 'id'>): void;
   removeToast(id: string): void;
 }
@@ -15,7 +15,7 @@ export interface ToastMessage {
   description?: string;
 }
 
-const ToastContext = createContext<ToastContextData>({} as ToastContextData);
+const ToastContext = createContext<ToastCtxData>({} as ToastCtxData);
 
 export const ToastProvider: React.FC = ({ children }) => {
   const [messages, setMessages] = useState<ToastMessage[]>([]);
@@ -48,12 +48,12 @@ export const ToastProvider: React.FC = ({ children }) => {
   );
 };
 
-export function useToast(): ToastContextData {
-  const context = useContext(ToastContext);
+export function useToast(): ToastCtxData {
+  const ctx = useContext(ToastContext);
 
-  if (!context) {
+  if (!ctx) {
     throw new Error('useToast must be used within a ToastProvider');
   }
 
-  return context;
+  return ctx;
 }
