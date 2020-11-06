@@ -34,7 +34,11 @@ const Campaigns: React.FC = () => {
 
       <ul>
         {campaigns.map(campaign => (
-          <li key={campaign._id}>{campaign.title}</li>
+          <li key={campaign._id}>
+            <img src={campaign.imgUrl} alt={campaign.title} />
+
+            {campaign.title}
+          </li>
         ))}
       </ul>
     </div>
