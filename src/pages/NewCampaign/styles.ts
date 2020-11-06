@@ -24,11 +24,11 @@ export const ContainerField = styled.div<ContainerFieldProps>`
       }
 
       > div:first-child {
-        margin-right: 5px;
+        margin-right: 8px;
       }
 
       > div:last-child {
-        margin-left: 5px;
+        margin-left: 8px;
       }
     `}
 `;

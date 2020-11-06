@@ -37,6 +37,7 @@
     "react/jsx-one-expression-per-line": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "no-underscore-dangle": "off",
+    "no-param-reassign": "off",
     "import/extensions": [
       "error",
       "ignorePackages",

@@ -19,5 +19,5 @@ export default createGlobalStyle`
 
   button { cursor: pointer; }
 
-  p, h1, h2, h3, h4, h5, h6 { margin: 0; }
+  figure, p, h1, h2, h3, h4, h5, h6 { margin: 0; }
 `;
