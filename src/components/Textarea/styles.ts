@@ -52,5 +52,5 @@ export const Container = styled.div<ContainerProps>`
 export const Error = styled.div`
   color: #f44336;
   display: block;
-  margin-top: ${({ theme }) => theme.settings.gutterXs};
+  margin-top: 3px;
 `;
