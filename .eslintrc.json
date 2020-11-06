@@ -38,6 +38,8 @@
     "@typescript-eslint/no-explicit-any": "off",
     "no-underscore-dangle": "off",
     "no-param-reassign": "off",
+    "jsx-a11y/control-has-associated-label": "off",
+    "no-shadow": "off",
     "import/extensions": [
       "error",
       "ignorePackages",

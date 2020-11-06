@@ -8,7 +8,7 @@ import { Container } from './styles';
 
 const Dashboard: React.FC = () => {
   return (
-    <Layout title="Dashboard">
+    <Layout title="Infinity War Campaign">
       <Container>
         <Card
           type="success"

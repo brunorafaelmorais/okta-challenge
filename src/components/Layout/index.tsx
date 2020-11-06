@@ -5,7 +5,7 @@ import clsx from 'clsx';
 
 import Logo from '../../assets/images/logo.png';
 import Thanos from '../../assets/images/thanos.jpg';
-import { TypoHeadline6, TypoSubtitle1 } from '../Typography';
+import { TypoHeadline6, TypoSubtitle2 } from '../Typography';
 import {
   Container,
   ContainerLogo,
@@ -60,12 +60,12 @@ const Layout: React.FC<LayoutProps> = ({ title, children }) => {
         <Nav>
           <NavLink isActive={pathname === '/'}>
             <Link to="/">
-              <TypoSubtitle1>Dashboard</TypoSubtitle1>
+              <TypoSubtitle2>Dashboard</TypoSubtitle2>
             </Link>
           </NavLink>
           <NavLink isActive={pathname.startsWith('/campaigns')}>
             <Link to="/campaigns">
-              <TypoSubtitle1>Campaigns</TypoSubtitle1>
+              <TypoSubtitle2>Campaigns</TypoSubtitle2>
             </Link>
           </NavLink>
         </Nav>

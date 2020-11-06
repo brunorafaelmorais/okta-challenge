@@ -5,6 +5,9 @@ import _ from 'lodash';
 import { Campaign } from '../../models/Campaign';
 import api from '../../services/api';
 import { useToast } from '../../hooks/toast';
+import Layout from '../../components/Layout';
+import { Container } from './styles';
+import GoBack from '../../components/GoBack';
 
 interface ParamTypes {
   id: string;
@@ -51,15 +54,18 @@ const CampaignDetail: React.FC = () => {
   }, [getCampaignById]);
 
   return (
-    <div>
-      {loading && <span>loading...</span>}
+    <Layout title="Infinity War Campaign">
+      <Container>
+        <GoBack />
+        {loading && <span>loading...</span>}
 
-      {!_.isEmpty(campaign) && (
-        <div>
-          <span>{campaign.title}</span>
-        </div>
-      )}
-    </div>
+        {!_.isEmpty(campaign) && (
+          <div>
+            <span>{campaign.title}</span>
+          </div>
+        )}
+      </Container>
+    </Layout>
   );
 };
 

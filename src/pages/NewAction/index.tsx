@@ -12,6 +12,7 @@ import { useToast } from '../../hooks/toast';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Textarea from '../../components/Textarea';
+import GoBack from '../../components/GoBack';
 
 interface ParamTypes {
   id: string;
@@ -74,6 +75,7 @@ const NewAction: React.FC = () => {
   return (
     <Layout title="Infinity War Campaign">
       <Container>
+        <GoBack />
         <TitlePage text="New Action" />
         <Form ref={formRef} onSubmit={handleSubmit}>
           <ContainerField>
