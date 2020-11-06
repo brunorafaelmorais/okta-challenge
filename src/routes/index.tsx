@@ -7,17 +7,6 @@ import CampaignDetailPage from '../pages/CampaignDetail';
 import NewCampaignPage from '../pages/NewCampaign';
 import NewActionPage from '../pages/NewAction';
 import DashboardPage from '../pages/Dashboard';
-import Layout from '../components/Layout';
-
-const FakePage: React.FC = () => {
-  return (
-    <Layout title="Campaign XXX">
-      <div>
-        <span>Fake Page</span>
-      </div>
-    </Layout>
-  );
-};
 
 const Routes: React.FC = () => {
   return (

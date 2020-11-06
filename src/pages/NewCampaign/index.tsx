@@ -11,6 +11,7 @@ import getValidationErrors from '../../utils/getValidationErrors';
 import { ContainerButtons, ContainerField, Container } from './styles';
 import Layout from '../../components/Layout';
 import ImageInput from '../../components/ImageInput';
+import TitlePage from '../../components/TitlePage';
 
 const NewCampaign: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
@@ -68,6 +69,7 @@ const NewCampaign: React.FC = () => {
   return (
     <Layout title="New Campaign">
       <Container>
+        <TitlePage text="Let's get started" />
         <Form ref={formRef} onSubmit={handleSubmit}>
           <ContainerField>
             <ImageInput name="imgUrl" label="Image" />
