@@ -6,8 +6,8 @@ import { Container, Content, IconAvatar } from './styles';
 
 interface CardProps {
   type: 'primary' | 'success' | 'info' | 'danger';
-  primaryText: string;
-  secondaryText: string;
+  primaryText: string | number;
+  secondaryText: string | number;
   icon: ElementType<IconBaseProps>;
 }
 

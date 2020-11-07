@@ -1,19 +1,28 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { MdDateRange, MdToday, MdViewList } from 'react-icons/md';
 
 import Card from '../../components/Card';
 import Layout from '../../components/Layout';
+import { useCampaign } from '../../hooks/campaign';
 
 import { Container } from './styles';
 
 const Dashboard: React.FC = () => {
+  const { allCampaigns, getAllCampaigns } = useCampaign();
+
+  const totalAllCampaigns = useMemo(() => allCampaigns.length, [allCampaigns]);
+
+  useEffect(() => {
+    getAllCampaigns();
+  }, [getAllCampaigns]);
+
   return (
     <Layout title="Infinity War Campaign">
       <Container>
         <Card
           type="success"
           primaryText="All campaigns"
-          secondaryText="7"
+          secondaryText={totalAllCampaigns}
           icon={MdViewList}
         />
         <Card
