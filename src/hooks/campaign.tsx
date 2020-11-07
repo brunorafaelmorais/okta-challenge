@@ -1,4 +1,10 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
 import _ from 'lodash';
 
 import { Campaign } from '../models/Campaign';
@@ -9,7 +15,8 @@ interface CampaignCtxData {
   loading: boolean;
   allCampaigns: Campaign[];
   campaign: Campaign;
-  getAllCampaigns(): void;
+  totalAllCampaigns: number;
+  getAllCampaigns(): Promise<void>;
   getCampaignById(id: string): Promise<void>;
   resetCampaign(): void;
 }
@@ -21,28 +28,30 @@ export const CampaignProvider: React.FC = ({ children }) => {
   const [allCampaigns, setAllCampaigns] = useState<Campaign[]>([]);
   const [campaign, setCampaign] = useState<Campaign>({} as Campaign);
 
+  const totalAllCampaigns = useMemo(() => allCampaigns.length, [allCampaigns]);
+
   const { addToast } = useToast();
 
   const resetCampaign = useCallback(() => {
     setCampaign({} as Campaign);
   }, []);
 
-  const getAllCampaigns = useCallback(() => {
+  const getAllCampaigns = useCallback(async () => {
     setLoading(true);
 
-    api
-      .get<Campaign[]>('campaign')
-      .then(response => setAllCampaigns(response.data))
-      .then(() => setLoading(false))
-      .catch(err => {
-        setLoading(false);
+    try {
+      const response = await api.get<Campaign[]>('campaign');
 
-        addToast({
-          type: 'error',
-          title: 'Error',
-          description: err.message,
-        });
+      setAllCampaigns(response.data);
+    } catch (err) {
+      addToast({
+        type: 'error',
+        title: 'Error',
+        description: err.message,
       });
+    } finally {
+      setLoading(false);
+    }
   }, [addToast]);
 
   const getCampaignById = useCallback(
@@ -81,9 +90,10 @@ export const CampaignProvider: React.FC = ({ children }) => {
       value={{
         allCampaigns,
         campaign,
+        loading,
+        totalAllCampaigns,
         getAllCampaigns,
         getCampaignById,
-        loading,
         resetCampaign,
       }}
     >

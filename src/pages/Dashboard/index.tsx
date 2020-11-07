@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { MdDateRange, MdToday, MdViewList } from 'react-icons/md';
 
 import Card from '../../components/Card';
@@ -8,9 +8,7 @@ import { useCampaign } from '../../hooks/campaign';
 import { Container } from './styles';
 
 const Dashboard: React.FC = () => {
-  const { allCampaigns, getAllCampaigns } = useCampaign();
-
-  const totalAllCampaigns = useMemo(() => allCampaigns.length, [allCampaigns]);
+  const { totalAllCampaigns, getAllCampaigns } = useCampaign();
 
   useEffect(() => {
     getAllCampaigns();
