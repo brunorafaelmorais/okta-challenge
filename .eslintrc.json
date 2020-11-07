@@ -40,6 +40,7 @@
     "no-param-reassign": "off",
     "jsx-a11y/control-has-associated-label": "off",
     "no-shadow": "off",
+    "react/no-unknown-property": "off",
     "import/extensions": [
       "error",
       "ignorePackages",

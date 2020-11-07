@@ -52,7 +52,8 @@ export const TableContainer = styled.div`
     color: ${({ theme }) => theme.colors.primary};
   }
 
-  table tbody tr:not(:hover) button {
+  table tbody tr:not(:hover) button,
+  table tbody tr:not(:hover) a {
     opacity: 0;
     visibility: hidden;
   }

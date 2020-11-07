@@ -3,14 +3,15 @@ import { MdDelete, MdEdit } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { Campaign } from '../../models/Campaign';
-import api from '../../services/api';
 import { useToast } from '../../hooks/toast';
 import Layout from '../../components/Layout';
 import { TableContainer } from '../../components/TableContainer';
 import { TitleInfos, Tab } from './styles';
 import { TypoHeadline4 } from '../../components/Typography';
 import Button from '../../components/Button';
+import Loader from '../../components/Loader';
+import NoData from '../../components/NoData';
+import { useCampaign } from '../../hooks/campaign';
 
 enum TabOptions {
   Recent = 0,
@@ -20,28 +21,13 @@ enum TabOptions {
 
 const Campaigns: React.FC = () => {
   const [activeTab, setActiveTab] = useState(TabOptions.Recent);
-  const [loading, setLoading] = useState(false);
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
 
   const { addToast } = useToast();
+  const { getAllCampaigns, allCampaigns, loading } = useCampaign();
 
   useEffect(() => {
-    setLoading(true);
-
-    api
-      .get<Campaign[]>('campaign')
-      .then(response => setCampaigns(response.data))
-      .then(() => setLoading(false))
-      .catch(err => {
-        setLoading(false);
-
-        addToast({
-          type: 'error',
-          title: 'Error',
-          description: err.message,
-        });
-      });
-  }, [addToast]);
+    getAllCampaigns();
+  }, [addToast, getAllCampaigns]);
 
   const handleTab = useCallback((tab: number) => {
     setActiveTab(tab);
@@ -80,49 +66,45 @@ const Campaigns: React.FC = () => {
         </button>
       </Tab>
 
-      <TableContainer>
-        <table>
-          <thead>
-            <tr>
-              <th>Campaign</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Status</th>
-              <th style={{ width: 90 }} />
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Title campaign</td>
-              <td>00/00/0000</td>
-              <td>00/00/0000</td>
-              <td>Live</td>
-              <td align="right">
-                <button type="button">
-                  <MdEdit size={24} />
-                </button>
-                <button type="button">
-                  <MdDelete size={24} />
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Title campaign</td>
-              <td>00/00/0000</td>
-              <td>00/00/0000</td>
-              <td>Scheduled</td>
-              <td align="right">
-                <button type="button">
-                  <MdEdit size={24} />
-                </button>
-                <button type="button">
-                  <MdDelete size={24} />
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </TableContainer>
+      {loading && !allCampaigns.length && <Loader />}
+
+      {!allCampaigns.length && !loading && (
+        <NoData text="No records to show." />
+      )}
+
+      {allCampaigns.length > 0 && (
+        <TableContainer>
+          <table>
+            <thead>
+              <tr>
+                <th>Campaign</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+                <th style={{ width: 90 }} />
+              </tr>
+            </thead>
+            <tbody>
+              {allCampaigns.map(campaign => (
+                <tr key={campaign._id}>
+                  <td>{campaign.title}</td>
+                  <td>{campaign.dateBegin}</td>
+                  <td>{campaign.dateEnd}</td>
+                  <td>Live</td>
+                  <td align="right">
+                    <Link to={`/campaigns/${campaign._id}`}>
+                      <MdEdit size={24} />
+                    </Link>
+                    <button type="button">
+                      <MdDelete size={24} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TableContainer>
+      )}
     </Layout>
   );
 };
