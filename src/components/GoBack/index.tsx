@@ -4,12 +4,22 @@ import { useHistory } from 'react-router-dom';
 
 import { Container } from './styles';
 
-const GoBack: React.FC = () => {
+interface GoBackProps {
+  url?: string;
+}
+
+const GoBack: React.FC<GoBackProps> = ({ url }) => {
   const history = useHistory();
 
   const goBack = useCallback(() => {
+    if (url) {
+      history.push(url);
+
+      return;
+    }
+
     history.goBack();
-  }, [history]);
+  }, [history, url]);
 
   return (
     <Container onClick={() => goBack()}>

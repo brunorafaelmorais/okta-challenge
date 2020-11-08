@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
@@ -8,11 +8,13 @@ import { ContainerButtons, ContainerField, Container } from './styles';
 import Layout from '../../components/Layout';
 import TitlePage from '../../components/TitlePage';
 import getValidationErrors from '../../utils/getValidationErrors';
-import { useToast } from '../../hooks/toast';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Textarea from '../../components/Textarea';
 import GoBack from '../../components/GoBack';
+import { useToast } from '../../hooks/toast';
+import { useCampaign } from '../../hooks/campaign';
+import { CampaignAction } from '../../models/CampaignAction';
 
 interface ParamTypes {
   id: string;
@@ -20,9 +22,15 @@ interface ParamTypes {
 
 const NewAction: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+
   const { addToast } = useToast();
+  const {
+    campaign: { actions },
+    updateCampaign,
+  } = useCampaign();
 
   const { id } = useParams<ParamTypes>();
+  const history = useHistory();
 
   const handleSubmit = useCallback(
     async (data, { reset }) => {
@@ -32,16 +40,20 @@ const NewAction: React.FC = () => {
         const schema = Yup.object().shape({
           title: Yup.string().required(),
           description: Yup.string().required(),
-          dateBegin: Yup.string().required('initial date is a required field'),
-          dateEnd: Yup.string().required('final date is a required field'),
+          dateBegin: Yup.string().required('start date is a required field'),
+          dateEnd: Yup.string().required('end date is a required field'),
         });
 
         await schema.validate(data, {
           abortEarly: false,
         });
 
+        const payload = [...actions, data] as CampaignAction[];
+
+        await updateCampaign(id, payload);
+
         reset();
-        console.log(data);
+        history.push(`/campaigns/${id}`);
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -64,7 +76,7 @@ const NewAction: React.FC = () => {
         });
       }
     },
-    [addToast],
+    [addToast, actions, history, id, updateCampaign],
   );
 
   const handleResetForm = useCallback(() => {
@@ -88,10 +100,10 @@ const NewAction: React.FC = () => {
 
           <ContainerField dateRange>
             <div>
-              <Input type="date" name="dateBegin" label="Initial date" />
+              <Input type="date" name="dateBegin" label="Start date" />
             </div>
             <div>
-              <Input type="date" name="dateEnd" label="Final date" />
+              <Input type="date" name="dateEnd" label="End date" />
             </div>
           </ContainerField>
 

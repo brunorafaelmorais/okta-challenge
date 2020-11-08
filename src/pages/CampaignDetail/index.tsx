@@ -32,7 +32,7 @@ const CampaignDetail: React.FC = () => {
   return (
     <Layout title="Infinity War Campaign">
       <Container>
-        <GoBack />
+        <GoBack url="/campaigns" />
 
         {loading && <Loader />}
 

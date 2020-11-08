@@ -10,6 +10,7 @@ import _ from 'lodash';
 import { Campaign } from '../models/Campaign';
 import api from '../services/api';
 import { useToast } from './toast';
+import { CampaignAction } from '../models/CampaignAction';
 
 interface CampaignCtxData {
   loading: boolean;
@@ -19,6 +20,7 @@ interface CampaignCtxData {
   getAllCampaigns(): Promise<void>;
   getCampaignById(id: string): Promise<void>;
   deleteCampaign(id: string): Promise<void>;
+  updateCampaign(id: string, actions: CampaignAction[]): Promise<void>;
 }
 
 const CampaignCtx = createContext<CampaignCtxData>({} as CampaignCtxData);
@@ -98,6 +100,29 @@ export const CampaignProvider: React.FC = ({ children }) => {
     [addToast],
   );
 
+  const updateCampaign = useCallback(
+    async (id: string, actions: CampaignAction[]) => {
+      try {
+        const response = await api.put<Campaign>(`campaign/${id}`, { actions });
+
+        setCampaign(response.data);
+
+        addToast({
+          type: 'success',
+          title: 'Success',
+          description: 'Action added.',
+        });
+      } catch (err) {
+        addToast({
+          type: 'error',
+          title: 'Error',
+          description: err.message,
+        });
+      }
+    },
+    [addToast],
+  );
+
   return (
     <CampaignCtx.Provider
       value={{
@@ -108,6 +133,7 @@ export const CampaignProvider: React.FC = ({ children }) => {
         getAllCampaigns,
         getCampaignById,
         deleteCampaign,
+        updateCampaign,
       }}
     >
       {children}

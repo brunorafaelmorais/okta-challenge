@@ -70,7 +70,7 @@ const NewCampaign: React.FC = () => {
   return (
     <Layout title="Infinity War Campaign">
       <Container>
-        <GoBack />
+        <GoBack url="/campaigns" />
         <TitlePage text="Let's get started" />
         <Form ref={formRef} onSubmit={handleSubmit}>
           <ContainerField>
