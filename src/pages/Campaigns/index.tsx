@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
+import Swal from 'sweetalert2';
 
 import { useToast } from '../../hooks/toast';
 import Layout from '../../components/Layout';
@@ -23,7 +24,12 @@ const Campaigns: React.FC = () => {
   const [activeTab, setActiveTab] = useState(TabOptions.Recent);
 
   const { addToast } = useToast();
-  const { getAllCampaigns, allCampaigns, loading } = useCampaign();
+  const {
+    getAllCampaigns,
+    deleteCampaign,
+    allCampaigns,
+    loading,
+  } = useCampaign();
 
   useEffect(() => {
     getAllCampaigns();
@@ -32,6 +38,26 @@ const Campaigns: React.FC = () => {
   const handleTab = useCallback((tab: number) => {
     setActiveTab(tab);
   }, []);
+
+  const handleDeleteCampaign = useCallback(
+    (id: string) => {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#083a6b',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+      }).then(async result => {
+        if (result.isConfirmed) {
+          await deleteCampaign(id);
+          Swal.fire('Deleted!', 'Campaign has been deleted.', 'success');
+        }
+      });
+    },
+    [deleteCampaign],
+  );
 
   return (
     <Layout title="Infinity War Campaign">
@@ -95,7 +121,10 @@ const Campaigns: React.FC = () => {
                     <Link to={`/campaigns/${campaign._id}`}>
                       <MdEdit size={24} />
                     </Link>
-                    <button type="button">
+                    <button
+                      onClick={() => handleDeleteCampaign(campaign._id)}
+                      type="button"
+                    >
                       <MdDelete size={24} />
                     </button>
                   </td>

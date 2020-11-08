@@ -1,6 +1,10 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const TableContainer = styled.div`
+interface TableContainerProps {
+  noGutterStart?: boolean;
+}
+
+export const TableContainer = styled.div<TableContainerProps>`
   width: 100%;
   overflow-x: auto;
 
@@ -57,4 +61,13 @@ export const TableContainer = styled.div`
     opacity: 0;
     visibility: hidden;
   }
+
+  ${({ noGutterStart }) =>
+    noGutterStart &&
+    css`
+      table th,
+      table td {
+        padding-left: 0;
+      }
+    `};
 `;

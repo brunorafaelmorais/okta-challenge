@@ -41,6 +41,7 @@
     "jsx-a11y/control-has-associated-label": "off",
     "no-shadow": "off",
     "react/no-unknown-property": "off",
+    "react/no-array-index-key": "off",
     "import/extensions": [
       "error",
       "ignorePackages",

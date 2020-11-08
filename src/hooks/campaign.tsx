@@ -18,7 +18,7 @@ interface CampaignCtxData {
   totalAllCampaigns: number;
   getAllCampaigns(): Promise<void>;
   getCampaignById(id: string): Promise<void>;
-  resetCampaign(): void;
+  deleteCampaign(id: string): Promise<void>;
 }
 
 const CampaignCtx = createContext<CampaignCtxData>({} as CampaignCtxData);
@@ -31,10 +31,6 @@ export const CampaignProvider: React.FC = ({ children }) => {
   const totalAllCampaigns = useMemo(() => allCampaigns.length, [allCampaigns]);
 
   const { addToast } = useToast();
-
-  const resetCampaign = useCallback(() => {
-    setCampaign({} as Campaign);
-  }, []);
 
   const getAllCampaigns = useCallback(async () => {
     setLoading(true);
@@ -85,6 +81,23 @@ export const CampaignProvider: React.FC = ({ children }) => {
     [addToast],
   );
 
+  const deleteCampaign = useCallback(
+    async (id: string) => {
+      try {
+        await api.delete(`campaign/${id}`);
+
+        setAllCampaigns(state => state.filter(campaign => campaign._id !== id));
+      } catch (err) {
+        addToast({
+          type: 'error',
+          title: 'Error',
+          description: err.message,
+        });
+      }
+    },
+    [addToast],
+  );
+
   return (
     <CampaignCtx.Provider
       value={{
@@ -94,7 +107,7 @@ export const CampaignProvider: React.FC = ({ children }) => {
         totalAllCampaigns,
         getAllCampaigns,
         getCampaignById,
-        resetCampaign,
+        deleteCampaign,
       }}
     >
       {children}

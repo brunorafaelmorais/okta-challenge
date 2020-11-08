@@ -8,4 +8,6 @@ export interface Campaign {
   dateEnd: string;
   dateBegin: string;
   actions: CampaignAction[];
+  createdAt: string;
+  updatedAt: string;
 }
