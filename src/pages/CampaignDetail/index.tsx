@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import _ from 'lodash';
+import { MdDelete, MdEdit } from 'react-icons/md';
+import Swal from 'sweetalert2';
 
 import Layout from '../../components/Layout';
 import { Container, Content, TitleContainer, TextInfo, Image } from './styles';
@@ -15,19 +17,43 @@ import {
 } from '../../components/Typography';
 import Button from '../../components/Button';
 import { TableContainer } from '../../components/TableContainer';
+import { CampaignAction } from '../../models/CampaignAction';
 
 interface ParamTypes {
   id: string;
 }
 
 const CampaignDetail: React.FC = () => {
-  const { getCampaignById, campaign, loading } = useCampaign();
+  const { getCampaignById, updateCampaign, campaign, loading } = useCampaign();
 
   const { id } = useParams<ParamTypes>();
 
   useEffect(() => {
     getCampaignById(id);
   }, [getCampaignById, id]);
+
+  const handleDeleteAction = useCallback(
+    (index: number) => {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#083a6b',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+      }).then(async result => {
+        if (result.isConfirmed) {
+          const updatedActions = campaign.actions.filter(
+            (_, idx) => idx !== index,
+          );
+
+          await updateCampaign(id, updatedActions);
+        }
+      });
+    },
+    [campaign.actions, id, updateCampaign],
+  );
 
   return (
     <Layout title="Infinity War Campaign">
@@ -87,6 +113,7 @@ const CampaignDetail: React.FC = () => {
                         <tr>
                           <th>Title</th>
                           <th>Description</th>
+                          <th style={{ width: 90 }} />
                         </tr>
                       </thead>
                       <tbody>
@@ -94,6 +121,17 @@ const CampaignDetail: React.FC = () => {
                           <tr key={index}>
                             <td>{action.title}</td>
                             <td>{action.description}</td>
+                            <td align="right">
+                              <button type="button">
+                                <MdEdit size={24} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteAction(index)}
+                                type="button"
+                              >
+                                <MdDelete size={24} />
+                              </button>
+                            </td>
                           </tr>
                         ))}
                       </tbody>

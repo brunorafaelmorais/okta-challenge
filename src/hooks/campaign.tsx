@@ -110,7 +110,7 @@ export const CampaignProvider: React.FC = ({ children }) => {
         addToast({
           type: 'success',
           title: 'Success',
-          description: 'Action added.',
+          description: 'Campaign updated.',
         });
       } catch (err) {
         addToast({
