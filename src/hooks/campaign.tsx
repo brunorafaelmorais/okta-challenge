@@ -10,6 +10,15 @@ import _ from 'lodash';
 import { Campaign } from '../models/Campaign';
 import api from '../services/api';
 import { useToast } from './toast';
+import toBase64 from '../utils/toBase64';
+
+interface CampaignDTO {
+  imgUrl: File;
+  title: string;
+  description: string;
+  dateBegin: string;
+  dateEnd: string;
+}
 
 interface CampaignCtxData {
   loading: boolean;
@@ -20,6 +29,7 @@ interface CampaignCtxData {
   getCampaignById(id: string): Promise<void>;
   deleteCampaign(id: string): Promise<void>;
   updateCampaign(id: string, payload: Partial<Campaign>): Promise<void>;
+  createCampaign(payload: CampaignDTO): Promise<void>;
 }
 
 const CampaignCtx = createContext<CampaignCtxData>({} as CampaignCtxData);
@@ -122,6 +132,36 @@ export const CampaignProvider: React.FC = ({ children }) => {
     [addToast],
   );
 
+  const createCampaign = useCallback(
+    async (payload: CampaignDTO) => {
+      setLoading(true);
+
+      try {
+        const transformedPayload = {
+          ...payload,
+          imgUrl: await toBase64(payload.imgUrl),
+        };
+
+        await api.post<Campaign>('campaign', transformedPayload);
+
+        addToast({
+          type: 'success',
+          title: 'Success',
+          description: 'Campaign created',
+        });
+      } catch (err) {
+        addToast({
+          type: 'error',
+          title: 'Error',
+          description: err.message,
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [addToast],
+  );
+
   return (
     <CampaignCtx.Provider
       value={{
@@ -133,6 +173,7 @@ export const CampaignProvider: React.FC = ({ children }) => {
         getCampaignById,
         deleteCampaign,
         updateCampaign,
+        createCampaign,
       }}
     >
       {children}

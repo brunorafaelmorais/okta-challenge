@@ -11,6 +11,7 @@ import { MdAddAPhoto } from 'react-icons/md';
 import { Container, AddImage, Label } from './styles';
 import { TypoBody2 } from '../Typography';
 import FieldError from '../FieldError';
+import toBase64 from '../../utils/toBase64';
 
 interface Props {
   name: string;
@@ -25,19 +26,22 @@ const ImageInput: React.FC<InputProps> = ({ name, label, ...rest }) => {
   const { fieldName, registerField, defaultValue, error } = useField(name);
   const [preview, setPreview] = useState(defaultValue);
 
-  const handlePreview = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handlePreview = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
 
-    if (!file) {
-      setPreview(null);
+      if (!file) {
+        setPreview(null);
 
-      return;
-    }
+        return;
+      }
 
-    const previewURL = URL.createObjectURL(file);
+      const base64 = await toBase64(file);
 
-    setPreview(previewURL);
-  }, []);
+      setPreview(base64);
+    },
+    [],
+  );
 
   useEffect(() => {
     registerField({

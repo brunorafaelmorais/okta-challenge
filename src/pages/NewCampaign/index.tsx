@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import { Form } from '@unform/web';
+import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 
 import Input from '../../components/Input';
@@ -13,9 +14,10 @@ import Layout from '../../components/Layout';
 import ImageInput from '../../components/ImageInput';
 import TitlePage from '../../components/TitlePage';
 import GoBack from '../../components/GoBack';
+import { useCampaign } from '../../hooks/campaign';
 
 interface FormData {
-  imgUrl: string;
+  imgUrl: File;
   title: string;
   description: string;
   dateBegin: string;
@@ -24,7 +26,11 @@ interface FormData {
 
 const NewCampaign: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+
+  const history = useHistory();
+
   const { addToast } = useToast();
+  const { createCampaign } = useCampaign();
 
   const handleSubmit: SubmitHandler<FormData> = useCallback(
     async (data, { reset }) => {
@@ -43,7 +49,10 @@ const NewCampaign: React.FC = () => {
           abortEarly: false,
         });
 
+        await createCampaign(data);
+
         reset();
+        history.push('/campaigns');
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -66,7 +75,7 @@ const NewCampaign: React.FC = () => {
         });
       }
     },
-    [addToast],
+    [addToast, createCampaign, history],
   );
 
   const handleResetForm = useCallback(() => {

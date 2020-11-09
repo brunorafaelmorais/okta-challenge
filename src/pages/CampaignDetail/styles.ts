@@ -39,8 +39,6 @@ export const Image = styled.div`
   width: 250px;
   max-width: 100%;
   position: relative;
-  border: 1px solid #ccc;
-  border-radius: ${({ theme }) => theme.settings.radius};
 
   &::before {
     content: '';
@@ -54,7 +52,6 @@ export const Image = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    padding: ${({ theme }) => theme.settings.gutterSm};
   }
 
   > figure > img {
