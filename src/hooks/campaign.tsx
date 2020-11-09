@@ -98,6 +98,12 @@ export const CampaignProvider: React.FC = ({ children }) => {
         await api.delete(`campaign/${id}`);
 
         setAllCampaigns(state => state.filter(campaign => campaign._id !== id));
+
+        addToast({
+          type: 'success',
+          title: 'Success',
+          description: 'Campaign has been deleted.',
+        });
       } catch (err) {
         addToast({
           type: 'error',
@@ -119,7 +125,7 @@ export const CampaignProvider: React.FC = ({ children }) => {
         addToast({
           type: 'success',
           title: 'Success',
-          description: 'Campaign updated.',
+          description: 'Campaign has been updated.',
         });
       } catch (err) {
         addToast({
@@ -147,7 +153,7 @@ export const CampaignProvider: React.FC = ({ children }) => {
         addToast({
           type: 'success',
           title: 'Success',
-          description: 'Campaign created',
+          description: 'Campaign has been created',
         });
       } catch (err) {
         addToast({

@@ -53,7 +53,6 @@ const Campaigns: React.FC = () => {
       }).then(async result => {
         if (result.isConfirmed) {
           await deleteCampaign(id);
-          Swal.fire('Deleted!', 'Campaign has been deleted.', 'success');
         }
       });
     },
