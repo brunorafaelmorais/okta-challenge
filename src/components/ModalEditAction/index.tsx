@@ -82,10 +82,10 @@ const ModalEditAction: React.FC<ModalEditActionProps> = ({
 
           <ContainerField dateRange>
             <div>
-              <Input type="date" name="dateBegin" label="Start date" />
+              <Input type="date" name="dateBegin" label="Start date" disabled />
             </div>
             <div>
-              <Input type="date" name="dateEnd" label="End date" />
+              <Input type="date" name="dateEnd" label="End date" disabled />
             </div>
           </ContainerField>
 
