@@ -71,15 +71,7 @@ const NewAction: React.FC = () => {
             title: 'Error',
             description: 'Fill in the highlighted fields',
           });
-
-          return;
         }
-
-        addToast({
-          type: 'error',
-          title: 'Error',
-          description: 'Bad request',
-        });
       }
     },
     [addToast, actions, history, id, updateCampaign],
@@ -117,7 +109,7 @@ const NewAction: React.FC = () => {
             <Button onClick={handleResetForm} outlined>
               Cancel
             </Button>
-            <Button type="submit">Create campaign</Button>
+            <Button type="submit">Create action</Button>
           </ContainerButtons>
         </Form>
       </Container>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import _ from 'lodash';
 import { MdDelete, MdEdit } from 'react-icons/md';
@@ -19,12 +19,18 @@ import Button from '../../components/Button';
 import { TableContainer } from '../../components/TableContainer';
 import formatDate from '../../utils/formatDate';
 import formatGridDate from '../../utils/formatGridDate';
+import { CampaignAction } from '../../models/CampaignAction';
+import ModalEditAction from '../../components/ModalEditAction';
 
 interface ParamTypes {
   id: string;
 }
 
 const CampaignDetail: React.FC = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingAction, setEditingAction] = useState({} as CampaignAction);
+  const [editingActionIndex, setEditingActionIndex] = useState(0);
+
   const { getCampaignById, updateCampaign, campaign, loading } = useCampaign();
 
   const { id } = useParams<ParamTypes>();
@@ -32,6 +38,35 @@ const CampaignDetail: React.FC = () => {
   useEffect(() => {
     getCampaignById(id);
   }, [getCampaignById, id]);
+
+  const toggleModal = useCallback(() => {
+    setModalOpen(state => !state);
+  }, []);
+
+  const handleEditAction = useCallback(
+    (index: number, action: CampaignAction) => {
+      setEditingActionIndex(index);
+      setEditingAction(action);
+
+      toggleModal();
+    },
+    [toggleModal],
+  );
+
+  const handleUpdateAction = useCallback(
+    async (action: CampaignAction) => {
+      const updatedActions = campaign.actions.map((item, index) => {
+        if (index === editingActionIndex) {
+          return action;
+        }
+
+        return item;
+      });
+
+      await updateCampaign(id, { actions: updatedActions });
+    },
+    [campaign.actions, editingActionIndex, updateCampaign, id],
+  );
 
   const handleDeleteAction = useCallback(
     (actionIndex: number) => {
@@ -57,121 +92,134 @@ const CampaignDetail: React.FC = () => {
   );
 
   return (
-    <Layout title="Infinity War Campaign">
-      <Container>
-        <GoBack url="/campaigns" />
+    <>
+      <ModalEditAction
+        isOpen={modalOpen}
+        setIsOpen={toggleModal}
+        editingAction={editingAction}
+        handleUpdateAction={handleUpdateAction}
+      />
+      <Layout title="Infinity War Campaign">
+        <Container>
+          <GoBack url="/campaigns" />
 
-        {loading && <Loader />}
+          {loading && <Loader />}
 
-        {_.isEmpty(campaign) && !loading && (
-          <NoData text="Campaign not found" />
-        )}
+          {_.isEmpty(campaign) && !loading && (
+            <NoData text="Campaign not found" />
+          )}
 
-        {!_.isEmpty(campaign) && !loading && (
-          <Content>
-            <div className="left">
-              <TitleContainer>
-                <TypoHeadline4>{campaign.title}</TypoHeadline4>
-                <TextInfo gutterTop>
-                  <TypoBody1>
-                    Created on {formatDate(campaign.createdAt)}
-                  </TypoBody1>
-                </TextInfo>
-              </TitleContainer>
-
-              <div className="group">
-                <TypoBody2>
-                  <strong>Description</strong>
-                </TypoBody2>
-                <TextInfo gutterTop>
-                  <TypoBody1>{campaign.description}</TypoBody1>
-                </TextInfo>
-              </div>
-
-              <div className="group">
-                <TypoBody2>
-                  <strong>Schedule</strong>
-                </TypoBody2>
-                <TextInfo gutterTop>
-                  <TypoBody1>
-                    {formatDate(campaign.dateBegin)} -{' '}
-                    {formatDate(campaign.dateEnd)}
-                  </TypoBody1>
-                </TextInfo>
-              </div>
-
-              <div className="group">
-                <TypoBody2>
-                  <strong>Actions</strong>
-                </TypoBody2>
-                {!campaign.actions.length && (
+          {!_.isEmpty(campaign) && !loading && (
+            <Content>
+              <div className="left">
+                <TitleContainer>
+                  <TypoHeadline4>{campaign.title}</TypoHeadline4>
                   <TextInfo gutterTop>
-                    <TypoBody1>No actions added yet.</TypoBody1>
+                    <TypoBody1>
+                      Created on {formatDate(campaign.createdAt)}
+                    </TypoBody1>
                   </TextInfo>
-                )}
+                </TitleContainer>
 
-                {campaign.actions.length > 0 && (
-                  <TableContainer noGutterStart>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Title</th>
-                          <th>Description</th>
-                          <th>Start Date</th>
-                          <th>End Date</th>
-                          <th style={{ width: 90 }} />
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {campaign.actions.map((action, index) => (
-                          <tr key={index}>
-                            <td>{action.title}</td>
-                            <td>{action.description}</td>
-                            <td>{formatGridDate(action.dateBegin)}</td>
-                            <td>{formatGridDate(action.dateEnd)}</td>
-                            <td align="right">
-                              <button type="button">
-                                <MdEdit size={24} />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteAction(index)}
-                                type="button"
-                              >
-                                <MdDelete size={24} />
-                              </button>
-                            </td>
+                <div className="group">
+                  <TypoBody2>
+                    <strong>Description</strong>
+                  </TypoBody2>
+                  <TextInfo gutterTop>
+                    <TypoBody1>{campaign.description}</TypoBody1>
+                  </TextInfo>
+                </div>
+
+                <div className="group">
+                  <TypoBody2>
+                    <strong>Schedule</strong>
+                  </TypoBody2>
+                  <TextInfo gutterTop>
+                    <TypoBody1>
+                      {formatDate(campaign.dateBegin)} -{' '}
+                      {formatDate(campaign.dateEnd)}
+                    </TypoBody1>
+                  </TextInfo>
+                </div>
+
+                <div className="group">
+                  <TypoBody2>
+                    <strong>Actions</strong>
+                  </TypoBody2>
+                  {!campaign.actions.length && (
+                    <TextInfo gutterTop>
+                      <TypoBody1>No actions added yet.</TypoBody1>
+                    </TextInfo>
+                  )}
+
+                  {campaign.actions.length > 0 && (
+                    <TableContainer noGutterStart>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th style={{ width: 90 }} />
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </TableContainer>
-                )}
-              </div>
+                        </thead>
+                        <tbody>
+                          {campaign.actions.map((action, index) => (
+                            <tr key={index}>
+                              <td>{action.title}</td>
+                              <td>{action.description}</td>
+                              <td>{formatGridDate(action.dateBegin)}</td>
+                              <td>{formatGridDate(action.dateEnd)}</td>
+                              <td align="right">
+                                <button
+                                  onClick={() => {
+                                    return handleEditAction(index, action);
+                                  }}
+                                  type="button"
+                                >
+                                  <MdEdit size={24} />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteAction(index)}
+                                  type="button"
+                                >
+                                  <MdDelete size={24} />
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </TableContainer>
+                  )}
+                </div>
 
-              <div className="group">
-                <Link to="/campaigns">
-                  <Button outlined>Save and exit</Button>
-                </Link>
-                <div className="containerBtnAddAction">
-                  <Link to={`/campaigns/${id}/new-action`}>
-                    <Button>Add action</Button>
+                <div className="group">
+                  <Link to="/campaigns">
+                    <Button outlined>Save and exit</Button>
                   </Link>
+                  <div className="containerBtnAddAction">
+                    <Link to={`/campaigns/${id}/new-action`}>
+                      <Button>Add action</Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-            {campaign.imgUrl && (
-              <div className="right">
-                <Image>
-                  <figure>
-                    <img src={campaign.imgUrl} alt={campaign.title} />
-                  </figure>
-                </Image>
-              </div>
-            )}
-          </Content>
-        )}
-      </Container>
-    </Layout>
+              {campaign.imgUrl && (
+                <div className="right">
+                  <Image>
+                    <figure>
+                      <img src={campaign.imgUrl} alt={campaign.title} />
+                    </figure>
+                  </Image>
+                </div>
+              )}
+            </Content>
+          )}
+        </Container>
+      </Layout>
+    </>
   );
 };
 
