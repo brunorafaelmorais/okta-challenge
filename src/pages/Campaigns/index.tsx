@@ -13,6 +13,7 @@ import Button from '../../components/Button';
 import Loader from '../../components/Loader';
 import NoData from '../../components/NoData';
 import { useCampaign } from '../../hooks/campaign';
+import formatGridDate from '../../utils/formatGridDate';
 
 enum TabOptions {
   Recent = 0,
@@ -114,8 +115,8 @@ const Campaigns: React.FC = () => {
               {allCampaigns.map(campaign => (
                 <tr key={campaign._id}>
                   <td>{campaign.title}</td>
-                  <td>{campaign.dateBegin}</td>
-                  <td>{campaign.dateEnd}</td>
+                  <td>{formatGridDate(campaign.dateBegin)}</td>
+                  <td>{formatGridDate(campaign.dateEnd)}</td>
                   <td>Live</td>
                   <td align="right">
                     <Link to={`/campaigns/${campaign._id}`}>

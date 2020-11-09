@@ -17,6 +17,8 @@ import {
 } from '../../components/Typography';
 import Button from '../../components/Button';
 import { TableContainer } from '../../components/TableContainer';
+import formatDate from '../../utils/formatDate';
+import formatGridDate from '../../utils/formatGridDate';
 
 interface ParamTypes {
   id: string;
@@ -71,7 +73,9 @@ const CampaignDetail: React.FC = () => {
               <TitleContainer>
                 <TypoHeadline4>{campaign.title}</TypoHeadline4>
                 <TextInfo gutterTop>
-                  <TypoBody1>Created on {campaign.createdAt}</TypoBody1>
+                  <TypoBody1>
+                    Created on {formatDate(campaign.createdAt)}
+                  </TypoBody1>
                 </TextInfo>
               </TitleContainer>
 
@@ -90,7 +94,8 @@ const CampaignDetail: React.FC = () => {
                 </TypoBody2>
                 <TextInfo gutterTop>
                   <TypoBody1>
-                    {campaign.dateBegin} - {campaign.dateEnd}
+                    {formatDate(campaign.dateBegin)} -{' '}
+                    {formatDate(campaign.dateEnd)}
                   </TypoBody1>
                 </TextInfo>
               </div>
@@ -112,6 +117,8 @@ const CampaignDetail: React.FC = () => {
                         <tr>
                           <th>Title</th>
                           <th>Description</th>
+                          <th>Start Date</th>
+                          <th>End Date</th>
                           <th style={{ width: 90 }} />
                         </tr>
                       </thead>
@@ -120,6 +127,8 @@ const CampaignDetail: React.FC = () => {
                           <tr key={index}>
                             <td>{action.title}</td>
                             <td>{action.description}</td>
+                            <td>{formatGridDate(action.dateBegin)}</td>
+                            <td>{formatGridDate(action.dateEnd)}</td>
                             <td align="right">
                               <button type="button">
                                 <MdEdit size={24} />
