@@ -9,7 +9,6 @@ import { ContainerButtons, ContainerField, Container } from './styles';
 import getValidationErrors from '../../utils/getValidationErrors';
 import { useToast } from '../../hooks/toast';
 import Input from '../Input';
-import GoBack from '../GoBack';
 import TitlePage from '../TitlePage';
 import Textarea from '../Textarea';
 import Button from '../Button';
@@ -69,7 +68,6 @@ const ModalEditAction: React.FC<ModalEditActionProps> = ({
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <Container>
-        <GoBack />
         <TitlePage text="Edit Action" />
         <Form ref={formRef} onSubmit={handleSubmit} initialData={editingAction}>
           <ContainerField>

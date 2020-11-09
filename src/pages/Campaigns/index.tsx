@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { MdDelete, MdEdit } from 'react-icons/md';
+import { MdDelete, MdEdit, MdVisibility } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import Swal from 'sweetalert2';
@@ -107,7 +107,7 @@ const Campaigns: React.FC = () => {
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Status</th>
-                <th style={{ width: 90 }} />
+                <th style={{ width: 120 }} />
               </tr>
             </thead>
             <tbody>
@@ -118,12 +118,16 @@ const Campaigns: React.FC = () => {
                   <td>{formatGridDate(campaign.dateEnd)}</td>
                   <td>Live</td>
                   <td align="right">
-                    <Link to={`/campaigns/${campaign._id}`}>
+                    <button type="button" title="Edit">
                       <MdEdit size={24} />
+                    </button>
+                    <Link to={`/campaigns/${campaign._id}`} title="See details">
+                      <MdVisibility size={24} />
                     </Link>
                     <button
                       onClick={() => handleDeleteCampaign(campaign._id)}
                       type="button"
+                      title="Delete"
                     >
                       <MdDelete size={24} />
                     </button>

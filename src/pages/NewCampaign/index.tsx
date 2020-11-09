@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import { Form } from '@unform/web';
 import { useHistory } from 'react-router-dom';
+import { parseISO, isBefore } from 'date-fns';
 import * as Yup from 'yup';
 
 import Input from '../../components/Input';
@@ -48,6 +49,19 @@ const NewCampaign: React.FC = () => {
         await schema.validate(data, {
           abortEarly: false,
         });
+
+        const parsedDateBegin = parseISO(data.dateBegin);
+        const parsedDateEnd = parseISO(data.dateEnd);
+
+        if (isBefore(parsedDateEnd, parsedDateBegin)) {
+          addToast({
+            type: 'warning',
+            title: 'Warning',
+            description: 'End date cannot be less than the start date.',
+          });
+
+          return;
+        }
 
         await createCampaign(data);
 
