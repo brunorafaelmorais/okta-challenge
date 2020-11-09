@@ -8,6 +8,10 @@ Website made with React for Oktagon Games Frontend developer position.
 
 In the project directory, you can run:
 
+### `npm install` or `yarn`
+
+This command is used to install all dependencies that the project needs.
+
 ### `npm start` or `yarn start`
 
 Runs the app in the development mode.\
