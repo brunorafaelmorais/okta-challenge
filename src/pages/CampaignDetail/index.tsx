@@ -17,7 +17,6 @@ import {
 } from '../../components/Typography';
 import Button from '../../components/Button';
 import { TableContainer } from '../../components/TableContainer';
-import { CampaignAction } from '../../models/CampaignAction';
 
 interface ParamTypes {
   id: string;
@@ -33,7 +32,7 @@ const CampaignDetail: React.FC = () => {
   }, [getCampaignById, id]);
 
   const handleDeleteAction = useCallback(
-    (index: number) => {
+    (actionIndex: number) => {
       Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -45,10 +44,10 @@ const CampaignDetail: React.FC = () => {
       }).then(async result => {
         if (result.isConfirmed) {
           const updatedActions = campaign.actions.filter(
-            (_, idx) => idx !== index,
+            (_, index) => index !== actionIndex,
           );
 
-          await updateCampaign(id, updatedActions);
+          await updateCampaign(id, { actions: updatedActions });
         }
       });
     },

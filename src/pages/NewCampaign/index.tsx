@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { FormHandles } from '@unform/core';
+import { FormHandles, SubmitHandler } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 
@@ -14,11 +14,19 @@ import ImageInput from '../../components/ImageInput';
 import TitlePage from '../../components/TitlePage';
 import GoBack from '../../components/GoBack';
 
+interface FormData {
+  imgUrl: string;
+  title: string;
+  description: string;
+  dateBegin: string;
+  dateEnd: string;
+}
+
 const NewCampaign: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
 
-  const handleSubmit = useCallback(
+  const handleSubmit: SubmitHandler<FormData> = useCallback(
     async (data, { reset }) => {
       try {
         formRef.current?.setErrors({});
@@ -36,7 +44,6 @@ const NewCampaign: React.FC = () => {
         });
 
         reset();
-        console.log(data);
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);

@@ -10,7 +10,6 @@ import _ from 'lodash';
 import { Campaign } from '../models/Campaign';
 import api from '../services/api';
 import { useToast } from './toast';
-import { CampaignAction } from '../models/CampaignAction';
 
 interface CampaignCtxData {
   loading: boolean;
@@ -20,15 +19,15 @@ interface CampaignCtxData {
   getAllCampaigns(): Promise<void>;
   getCampaignById(id: string): Promise<void>;
   deleteCampaign(id: string): Promise<void>;
-  updateCampaign(id: string, actions: CampaignAction[]): Promise<void>;
+  updateCampaign(id: string, payload: Partial<Campaign>): Promise<void>;
 }
 
 const CampaignCtx = createContext<CampaignCtxData>({} as CampaignCtxData);
 
 export const CampaignProvider: React.FC = ({ children }) => {
   const [loading, setLoading] = useState(false);
-  const [allCampaigns, setAllCampaigns] = useState<Campaign[]>([]);
   const [campaign, setCampaign] = useState<Campaign>({} as Campaign);
+  const [allCampaigns, setAllCampaigns] = useState<Campaign[]>([]);
 
   const totalAllCampaigns = useMemo(() => allCampaigns.length, [allCampaigns]);
 
@@ -101,9 +100,9 @@ export const CampaignProvider: React.FC = ({ children }) => {
   );
 
   const updateCampaign = useCallback(
-    async (id: string, actions: CampaignAction[]) => {
+    async (id: string, payload: Partial<Campaign>) => {
       try {
-        const response = await api.put<Campaign>(`campaign/${id}`, { actions });
+        const response = await api.put<Campaign>(`campaign/${id}`, payload);
 
         setCampaign(response.data);
 

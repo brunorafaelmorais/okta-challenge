@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { FormHandles } from '@unform/core';
+import { FormHandles, SubmitHandler } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 
@@ -14,10 +14,16 @@ import Textarea from '../../components/Textarea';
 import GoBack from '../../components/GoBack';
 import { useToast } from '../../hooks/toast';
 import { useCampaign } from '../../hooks/campaign';
-import { CampaignAction } from '../../models/CampaignAction';
 
 interface ParamTypes {
   id: string;
+}
+
+interface FormData {
+  title: string;
+  description: string;
+  dateBegin: string;
+  dateEnd: string;
 }
 
 const NewAction: React.FC = () => {
@@ -32,7 +38,7 @@ const NewAction: React.FC = () => {
   const { id } = useParams<ParamTypes>();
   const history = useHistory();
 
-  const handleSubmit = useCallback(
+  const handleSubmit: SubmitHandler<FormData> = useCallback(
     async (data, { reset }) => {
       try {
         formRef.current?.setErrors({});
@@ -48,9 +54,9 @@ const NewAction: React.FC = () => {
           abortEarly: false,
         });
 
-        const payload = [...actions, data] as CampaignAction[];
+        const payloadActions = [...actions, data];
 
-        await updateCampaign(id, payload);
+        await updateCampaign(id, { actions: payloadActions });
 
         reset();
         history.push(`/campaigns/${id}`);
