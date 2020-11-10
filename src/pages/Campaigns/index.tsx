@@ -1,33 +1,36 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { MdDelete, MdEdit, MdVisibility } from 'react-icons/md';
 import { Link } from 'react-router-dom';
-import clsx from 'clsx';
 import Swal from 'sweetalert2';
+import { parseISO, format } from 'date-fns';
 
 import { useToast } from '../../hooks/toast';
 import Layout from '../../components/Layout';
 import { TableContainer } from '../../components/TableContainer';
-import { TitleInfos, Tab } from './styles';
+import { TitleInfos } from './styles';
 import { TypoHeadline4 } from '../../components/Typography';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';
 import NoData from '../../components/NoData';
 import { useCampaign } from '../../hooks/campaign';
 import formatGridDate from '../../utils/formatGridDate';
-
-enum TabOptions {
-  Recent = 0,
-  Live = 1,
-  Scheduled = 2,
-}
+import ModalEditCampaign, {
+  EditingCampaignFormData,
+} from '../../components/ModalEditCampaign';
+import { Campaign } from '../../models/Campaign';
 
 const Campaigns: React.FC = () => {
-  const [activeTab, setActiveTab] = useState(TabOptions.Recent);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingCampaign, setEditingCampaign] = useState(
+    {} as EditingCampaignFormData,
+  );
+  const [editingCampaignId, setEditingCampaignId] = useState('');
 
   const { addToast } = useToast();
   const {
     getAllCampaigns,
     deleteCampaign,
+    updateCampaign,
     allCampaigns,
     loading,
   } = useCampaign();
@@ -36,9 +39,38 @@ const Campaigns: React.FC = () => {
     getAllCampaigns();
   }, [addToast, getAllCampaigns]);
 
-  const handleTab = useCallback((tab: number) => {
-    setActiveTab(tab);
+  const toggleModal = useCallback(() => {
+    setModalOpen(state => !state);
   }, []);
+
+  const handleEditAction = useCallback(
+    async (id: string, campaign: Campaign) => {
+      setEditingCampaignId(id);
+
+      const parsedDateBegin = parseISO(campaign.dateBegin);
+      const parsedDateEnd = parseISO(campaign.dateEnd);
+
+      const transformedCampaign = {
+        title: campaign.title,
+        description: campaign.description,
+        dateBegin: format(parsedDateBegin, 'yyyy-MM-dd'),
+        dateEnd: format(parsedDateEnd, 'yyyy-MM-dd'),
+      };
+
+      setEditingCampaign(transformedCampaign);
+
+      toggleModal();
+    },
+    [toggleModal, setEditingCampaignId],
+  );
+
+  const handleUpdateCampaign = useCallback(
+    async (campaign: EditingCampaignFormData) => {
+      await updateCampaign(editingCampaignId, campaign);
+      getAllCampaigns();
+    },
+    [updateCampaign, getAllCampaigns, editingCampaignId],
+  );
 
   const handleDeleteCampaign = useCallback(
     (id: string) => {
@@ -61,36 +93,19 @@ const Campaigns: React.FC = () => {
 
   return (
     <Layout title="Infinity War Campaign">
+      <ModalEditCampaign
+        isOpen={modalOpen}
+        setIsOpen={toggleModal}
+        editingCampaign={editingCampaign}
+        handleUpdateCampaign={handleUpdateCampaign}
+      />
+
       <TitleInfos>
         <TypoHeadline4>Campaigns</TypoHeadline4>
         <Link to="/campaigns/new">
           <Button>New Campaign</Button>
         </Link>
       </TitleInfos>
-
-      <Tab>
-        <button
-          className={clsx({ active: activeTab === TabOptions.Recent })}
-          onClick={() => handleTab(TabOptions.Recent)}
-          type="button"
-        >
-          Recent
-        </button>
-        <button
-          className={clsx({ active: activeTab === TabOptions.Live })}
-          onClick={() => handleTab(TabOptions.Live)}
-          type="button"
-        >
-          Live
-        </button>
-        <button
-          className={clsx({ active: activeTab === TabOptions.Scheduled })}
-          onClick={() => handleTab(TabOptions.Scheduled)}
-          type="button"
-        >
-          Scheduled
-        </button>
-      </Tab>
 
       {loading && !allCampaigns.length && <Loader />}
 
@@ -99,7 +114,7 @@ const Campaigns: React.FC = () => {
       )}
 
       {allCampaigns.length > 0 && (
-        <TableContainer>
+        <TableContainer noGutterStart>
           <table>
             <thead>
               <tr>
@@ -116,9 +131,13 @@ const Campaigns: React.FC = () => {
                   <td>{campaign.title}</td>
                   <td>{formatGridDate(campaign.dateBegin)}</td>
                   <td>{formatGridDate(campaign.dateEnd)}</td>
-                  <td>Live</td>
+                  <td>{campaign.status}</td>
                   <td align="right">
-                    <button type="button" title="Edit">
+                    <button
+                      onClick={() => handleEditAction(campaign._id, campaign)}
+                      type="button"
+                      title="Edit"
+                    >
                       <MdEdit size={24} />
                     </button>
                     <Link to={`/campaigns/${campaign._id}`} title="See details">

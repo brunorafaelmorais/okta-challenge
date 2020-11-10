@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import _ from 'lodash';
 import { MdDelete, MdEdit } from 'react-icons/md';
@@ -14,6 +14,7 @@ import {
   TypoHeadline4,
   TypoBody1,
   TypoBody2,
+  TypoButton,
 } from '../../components/Typography';
 import Button from '../../components/Button';
 import { TableContainer } from '../../components/TableContainer';
@@ -21,6 +22,7 @@ import formatDate from '../../utils/formatDate';
 import formatGridDate from '../../utils/formatGridDate';
 import { CampaignAction } from '../../models/CampaignAction';
 import ModalEditAction from '../../components/ModalEditAction';
+import toBase64 from '../../utils/toBase64';
 
 interface ParamTypes {
   id: string;
@@ -89,6 +91,19 @@ const CampaignDetail: React.FC = () => {
       });
     },
     [campaign.actions, id, updateCampaign],
+  );
+
+  const handleImageChange = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+
+      if (file) {
+        const imgUrl = (await toBase64(file)) as string;
+
+        await updateCampaign(id, { imgUrl });
+      }
+    },
+    [id, updateCampaign],
   );
 
   return (
@@ -208,10 +223,19 @@ const CampaignDetail: React.FC = () => {
               </div>
               {campaign.imgUrl && (
                 <div className="right">
-                  <Image>
+                  <Image htmlFor="fileImage">
                     <figure>
                       <img src={campaign.imgUrl} alt={campaign.title} />
                     </figure>
+                    <input
+                      type="file"
+                      accept="image/png,image/jpg,image/jpeg"
+                      id="fileImage"
+                      onChange={handleImageChange}
+                    />
+                    <div className="btn">
+                      <TypoButton>Change image</TypoButton>
+                    </div>
                   </Image>
                 </div>
               )}

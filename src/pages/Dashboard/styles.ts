@@ -8,7 +8,7 @@ export const Container = styled.div`
   align-items: stretch;
 
   @media screen and (min-width: 1024px) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     grid-gap: ${({ theme }) => theme.settings.gutterXl};
   }
 `;

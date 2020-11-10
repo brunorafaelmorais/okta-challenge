@@ -12,6 +12,7 @@ export const TitleContainer = styled.div`
 
 export const Content = styled.div`
   display: flex;
+  flex-direction: column;
 
   .containerBtnAddAction {
     display: inline-flex;
@@ -22,7 +23,6 @@ export const Content = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1 1;
-    margin-right: ${({ theme }) => theme.settings.gutterXl};
   }
 
   > .left .group + .group {
@@ -31,14 +31,32 @@ export const Content = styled.div`
 
   > .right {
     flex-shrink: 0;
+    margin-top: ${({ theme }) => theme.settings.gutterXl};
+  }
+
+  @media screen and (min-width: 768px) {
+    flex-direction: row;
+
+    > .left {
+      margin-right: ${({ theme }) => theme.settings.gutterXl};
+    }
+
+    > .right {
+      margin-top: 0;
+    }
   }
 `;
 
-export const Image = styled.div`
+export const Image = styled.label`
   display: block;
   width: 250px;
   max-width: 100%;
   position: relative;
+  cursor: pointer;
+
+  > input {
+    display: none;
+  }
 
   &::before {
     content: '';
@@ -59,6 +77,26 @@ export const Image = styled.div`
     height: 100%;
     object-fit: cover;
     border-radius: ${({ theme }) => theme.settings.radius};
+  }
+
+  > .btn {
+    position: absolute;
+    bottom: ${({ theme }) => theme.settings.gutterSm};
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(37, 81, 124, 0.8);
+    color: #fff;
+    border: 0;
+    outline: none;
+    height: 30px;
+    line-height: 32px;
+    padding: 0 ${({ theme }) => theme.settings.gutterMd};
+    border-radius: ${({ theme }) => theme.settings.radius};
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.primary};
+    }
   }
 `;
 

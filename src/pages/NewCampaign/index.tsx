@@ -17,7 +17,7 @@ import TitlePage from '../../components/TitlePage';
 import GoBack from '../../components/GoBack';
 import { useCampaign } from '../../hooks/campaign';
 
-interface FormData {
+export interface FormDataCampaign {
   imgUrl: File;
   title: string;
   description: string;
@@ -33,7 +33,7 @@ const NewCampaign: React.FC = () => {
   const { addToast } = useToast();
   const { createCampaign } = useCampaign();
 
-  const handleSubmit: SubmitHandler<FormData> = useCallback(
+  const handleSubmit: SubmitHandler<FormDataCampaign> = useCallback(
     async (data, { reset }) => {
       try {
         formRef.current?.setErrors({});

@@ -21,7 +21,7 @@ const bgs = {
 
 const colors = {
   primary: css`
-    color: ${({ theme }) => theme.colors.primary};
+    color: #f57c00;
   `,
   success: css`
     color: #2ca961;

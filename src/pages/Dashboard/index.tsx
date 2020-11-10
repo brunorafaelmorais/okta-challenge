@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { MdDateRange, MdToday, MdViewList } from 'react-icons/md';
+import { MdDateRange, MdToday, MdViewList, MdCancel } from 'react-icons/md';
 
 import Card from '../../components/Card';
 import Layout from '../../components/Layout';
@@ -8,7 +8,13 @@ import { useCampaign } from '../../hooks/campaign';
 import { Container } from './styles';
 
 const Dashboard: React.FC = () => {
-  const { totalAllCampaigns, getAllCampaigns } = useCampaign();
+  const {
+    totalAllCampaigns,
+    totalLiveCampaigns,
+    totalScheduleCampaigns,
+    totalClosesCampaigns,
+    getAllCampaigns,
+  } = useCampaign();
 
   useEffect(() => {
     getAllCampaigns();
@@ -26,14 +32,20 @@ const Dashboard: React.FC = () => {
         <Card
           type="info"
           primaryText="Active campaigns"
-          secondaryText="7"
+          secondaryText={totalLiveCampaigns}
           icon={MdToday}
         />
         <Card
           type="danger"
           primaryText="Scheduled campaigns"
-          secondaryText="7"
+          secondaryText={totalScheduleCampaigns}
           icon={MdDateRange}
+        />
+        <Card
+          type="primary"
+          primaryText="Closed campaigns"
+          secondaryText={totalClosesCampaigns}
+          icon={MdCancel}
         />
       </Container>
     </Layout>

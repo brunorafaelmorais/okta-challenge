@@ -10,4 +10,5 @@ export interface Campaign {
   actions: CampaignAction[];
   createdAt: string;
   updatedAt: string;
+  status?: string;
 }

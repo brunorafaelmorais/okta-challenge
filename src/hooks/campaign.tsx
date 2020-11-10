@@ -11,6 +11,7 @@ import { Campaign } from '../models/Campaign';
 import api from '../services/api';
 import { useToast } from './toast';
 import toBase64 from '../utils/toBase64';
+import showStatus from '../utils/showStatus';
 
 interface CampaignDTO {
   imgUrl: File;
@@ -25,6 +26,9 @@ interface CampaignCtxData {
   allCampaigns: Campaign[];
   campaign: Campaign;
   totalAllCampaigns: number;
+  totalScheduleCampaigns: number;
+  totalLiveCampaigns: number;
+  totalClosesCampaigns: number;
   getAllCampaigns(): Promise<void>;
   getCampaignById(id: string): Promise<void>;
   deleteCampaign(id: string): Promise<void>;
@@ -41,6 +45,19 @@ export const CampaignProvider: React.FC = ({ children }) => {
 
   const totalAllCampaigns = useMemo(() => allCampaigns.length, [allCampaigns]);
 
+  const totalScheduleCampaigns = useMemo(() => {
+    return allCampaigns.filter(campaign => campaign.status === 'Schedule')
+      .length;
+  }, [allCampaigns]);
+
+  const totalLiveCampaigns = useMemo(() => {
+    return allCampaigns.filter(campaign => campaign.status === 'Live').length;
+  }, [allCampaigns]);
+
+  const totalClosesCampaigns = useMemo(() => {
+    return allCampaigns.filter(campaign => campaign.status === 'Closed').length;
+  }, [allCampaigns]);
+
   const { addToast } = useToast();
 
   const getAllCampaigns = useCallback(async () => {
@@ -49,7 +66,14 @@ export const CampaignProvider: React.FC = ({ children }) => {
     try {
       const response = await api.get<Campaign[]>('campaign');
 
-      setAllCampaigns(response.data);
+      const updatedResponse = response.data.map(campaign => {
+        return {
+          ...campaign,
+          status: showStatus(campaign.dateBegin, campaign.dateEnd),
+        };
+      });
+
+      setAllCampaigns(updatedResponse);
     } catch (err) {
       addToast({
         type: 'error',
@@ -175,6 +199,9 @@ export const CampaignProvider: React.FC = ({ children }) => {
         campaign,
         loading,
         totalAllCampaigns,
+        totalScheduleCampaigns,
+        totalLiveCampaigns,
+        totalClosesCampaigns,
         getAllCampaigns,
         getCampaignById,
         deleteCampaign,
