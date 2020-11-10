@@ -36,7 +36,7 @@ const Modal: React.FC<ModalProps> = ({ children, isOpen, setIsOpen }) => {
           flexDirection: 'column',
         },
         overlay: {
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
         },
       }}
     >

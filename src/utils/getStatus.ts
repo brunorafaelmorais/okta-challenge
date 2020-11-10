@@ -1,6 +1,6 @@
 import { parseISO, isBefore, isAfter } from 'date-fns';
 
-export default function showStatus(dateBegin: string, dateEnd: string): string {
+const getStatus = (dateBegin: string, dateEnd: string): string => {
   const parsedDateBegin = parseISO(dateBegin);
   const parsedDateEnd = parseISO(dateEnd);
 
@@ -19,4 +19,6 @@ export default function showStatus(dateBegin: string, dateEnd: string): string {
   }
 
   return 'Schedule';
-}
+};
+
+export default getStatus;

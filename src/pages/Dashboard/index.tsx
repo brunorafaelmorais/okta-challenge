@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { MdDateRange, MdToday, MdViewList, MdCancel } from 'react-icons/md';
+import { MdDateRange, MdToday, MdViewList, MdEventBusy } from 'react-icons/md';
 
 import Card from '../../components/Card';
 import Layout from '../../components/Layout';
@@ -36,16 +36,16 @@ const Dashboard: React.FC = () => {
           icon={MdToday}
         />
         <Card
-          type="danger"
+          type="primary"
           primaryText="Scheduled campaigns"
           secondaryText={totalScheduleCampaigns}
           icon={MdDateRange}
         />
         <Card
-          type="primary"
+          type="danger"
           primaryText="Closed campaigns"
           secondaryText={totalClosesCampaigns}
-          icon={MdCancel}
+          icon={MdEventBusy}
         />
       </Container>
     </Layout>

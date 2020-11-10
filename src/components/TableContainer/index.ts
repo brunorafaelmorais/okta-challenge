@@ -25,6 +25,7 @@ export const TableContainer = styled.div<TableContainerProps>`
 
   table td {
     border-top: 1px solid #dee2e6;
+    transition: background-color 0.2s;
   }
 
   table th {
@@ -32,6 +33,10 @@ export const TableContainer = styled.div<TableContainerProps>`
     text-align: left;
     vertical-align: bottom;
     border-bottom: 2px solid #dee2e6;
+  }
+
+  table a {
+    text-decoration: underline;
   }
 
   table button,
@@ -56,10 +61,8 @@ export const TableContainer = styled.div<TableContainerProps>`
     color: ${({ theme }) => theme.colors.primary};
   }
 
-  table tbody tr:not(:hover) button,
-  table tbody tr:not(:hover) a {
-    opacity: 0;
-    visibility: hidden;
+  table tbody tr:hover td {
+    background-color: #f9f9f9;
   }
 
   ${({ noGutterStart }) =>
@@ -70,4 +73,12 @@ export const TableContainer = styled.div<TableContainerProps>`
         padding-left: 0;
       }
     `};
+
+  @media screen and (min-width: 1024px) {
+    table tbody tr:not(:hover) button,
+    table tbody tr:not(:hover) a {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
 `;

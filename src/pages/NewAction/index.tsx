@@ -3,6 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
+import { parseISO, isBefore } from 'date-fns';
 
 import { ContainerButtons, ContainerField, Container } from './styles';
 import Layout from '../../components/Layout';
@@ -53,6 +54,19 @@ const NewAction: React.FC = () => {
         await schema.validate(data, {
           abortEarly: false,
         });
+
+        const parsedDateBegin = parseISO(data.dateBegin);
+        const parsedDateEnd = parseISO(data.dateEnd);
+
+        if (isBefore(parsedDateEnd, parsedDateBegin)) {
+          addToast({
+            type: 'warning',
+            title: 'Warning',
+            description: 'End date cannot be less than the start date.',
+          });
+
+          return;
+        }
 
         const payloadActions = [...actions, data];
 

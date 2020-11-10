@@ -7,8 +7,11 @@ export const Container = styled.div`
   justify-items: stretch;
   align-items: stretch;
 
-  @media screen and (min-width: 1024px) {
+  @media screen and (min-width: 600px) {
     grid-template-columns: repeat(2, 1fr);
-    grid-gap: ${({ theme }) => theme.settings.gutterXl};
+  }
+
+  @media screen and (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
   }
 `;

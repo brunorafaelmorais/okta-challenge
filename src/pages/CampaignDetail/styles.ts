@@ -80,19 +80,23 @@ export const Image = styled.label`
   }
 
   > .btn {
+    width: 38px;
+    height: 38px;
     position: absolute;
     bottom: ${({ theme }) => theme.settings.gutterSm};
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(37, 81, 124, 0.8);
+    right: ${({ theme }) => theme.settings.gutterSm};
+    background-color: rgba(37, 81, 124, 0.9);
     color: #fff;
     border: 0;
     outline: none;
-    height: 30px;
     line-height: 32px;
     padding: 0 ${({ theme }) => theme.settings.gutterMd};
     border-radius: ${({ theme }) => theme.settings.radius};
     transition: background-color 0.2s;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     &:hover {
       background-color: ${({ theme }) => theme.colors.primary};
@@ -106,6 +110,30 @@ export const TextInfo = styled.div<TextInfoProps>`
   ${({ gutterTop }) =>
     gutterTop &&
     css`
-      margin-top: ${({ theme }) => theme.settings.gutterXs};
+      margin-top: ${({ theme }) => theme.settings.gutterSm};
     `};
+`;
+
+export const EditContainer = styled.div`
+  display: inline-flex;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
+export const InnerTextTitle = styled.div`
+  display: inline-flex;
+  margin-right: ${({ theme }) => theme.settings.gutterSm};
+
+  @media screen and (min-width: 1024px) {
+    margin-right: ${({ theme }) => theme.settings.gutterXl};
+  }
+`;
+
+export const CountData = styled.div`
+  border-top: 1px solid #dee2e6;
+  padding: 0.75rem;
 `;

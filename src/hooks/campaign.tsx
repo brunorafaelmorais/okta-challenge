@@ -11,8 +11,8 @@ import { Campaign } from '../models/Campaign';
 import api from '../services/api';
 import { useToast } from './toast';
 import toBase64 from '../utils/toBase64';
-import showStatus from '../utils/showStatus';
-import totalCampaignsByStatus from '../utils/totalCampaignsByStatus';
+import getStatus from '../utils/getStatus';
+import countByStatus from '../utils/countByStatus';
 
 interface CampaignDTO {
   imgUrl: File;
@@ -46,17 +46,20 @@ export const CampaignProvider: React.FC = ({ children }) => {
 
   const totalAllCampaigns = useMemo(() => allCampaigns.length, [allCampaigns]);
 
-  const totalScheduleCampaigns = useMemo(() => {
-    return totalCampaignsByStatus('Schedule', allCampaigns);
-  }, [allCampaigns]);
+  const totalScheduleCampaigns = useMemo(
+    () => countByStatus('schedule')(allCampaigns),
+    [allCampaigns],
+  );
 
-  const totalLiveCampaigns = useMemo(() => {
-    return totalCampaignsByStatus('Live', allCampaigns);
-  }, [allCampaigns]);
+  const totalLiveCampaigns = useMemo(
+    () => countByStatus('live')(allCampaigns),
+    [allCampaigns],
+  );
 
-  const totalClosesCampaigns = useMemo(() => {
-    return totalCampaignsByStatus('Closed', allCampaigns);
-  }, [allCampaigns]);
+  const totalClosesCampaigns = useMemo(
+    () => countByStatus('closed')(allCampaigns),
+    [allCampaigns],
+  );
 
   const { addToast } = useToast();
 
@@ -66,12 +69,10 @@ export const CampaignProvider: React.FC = ({ children }) => {
     try {
       const response = await api.get<Campaign[]>('campaign');
 
-      const updatedResponse = response.data.map(campaign => {
-        return {
-          ...campaign,
-          status: showStatus(campaign.dateBegin, campaign.dateEnd),
-        };
-      });
+      const updatedResponse = response.data.map(item => ({
+        ...item,
+        status: getStatus(item.dateBegin, item.dateEnd),
+      }));
 
       setAllCampaigns(updatedResponse);
     } catch (err) {
@@ -109,6 +110,8 @@ export const CampaignProvider: React.FC = ({ children }) => {
           title: 'Error',
           description: err.message,
         });
+
+        setCampaign({} as Campaign);
       } finally {
         setLoading(false);
       }

@@ -1,11 +1,21 @@
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import _ from 'lodash';
-import { MdDelete, MdEdit } from 'react-icons/md';
+import { MdDelete, MdEdit, MdCreate } from 'react-icons/md';
 import Swal from 'sweetalert2';
+import { parseISO, format } from 'date-fns';
 
 import Layout from '../../components/Layout';
-import { Container, Content, TitleContainer, TextInfo, Image } from './styles';
+import {
+  Container,
+  Content,
+  TitleContainer,
+  TextInfo,
+  Image,
+  EditContainer,
+  CountData,
+  InnerTextTitle,
+} from './styles';
 import GoBack from '../../components/GoBack';
 import Loader from '../../components/Loader';
 import NoData from '../../components/NoData';
@@ -14,15 +24,18 @@ import {
   TypoHeadline4,
   TypoBody1,
   TypoBody2,
-  TypoButton,
+  TypoSubtitle1,
 } from '../../components/Typography';
 import Button from '../../components/Button';
 import { TableContainer } from '../../components/TableContainer';
 import formatDate from '../../utils/formatDate';
-import formatGridDate from '../../utils/formatGridDate';
 import { CampaignAction } from '../../models/CampaignAction';
 import ModalEditAction from '../../components/ModalEditAction';
 import toBase64 from '../../utils/toBase64';
+import ModalEditCampaign, {
+  EditingCampaignFormData,
+} from '../../components/ModalEditCampaign';
+import { Campaign } from '../../models/Campaign';
 
 interface ParamTypes {
   id: string;
@@ -32,6 +45,10 @@ const CampaignDetail: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingAction, setEditingAction] = useState({} as CampaignAction);
   const [editingActionIndex, setEditingActionIndex] = useState(0);
+  const [modalOpenCampaign, setModalOpenCampaign] = useState(false);
+  const [editingCampaign, setEditingCampaign] = useState(
+    {} as EditingCampaignFormData,
+  );
 
   const { getCampaignById, updateCampaign, campaign, loading } = useCampaign();
 
@@ -44,6 +61,36 @@ const CampaignDetail: React.FC = () => {
   const toggleModal = useCallback(() => {
     setModalOpen(state => !state);
   }, []);
+
+  const toggleModalCampaign = useCallback(() => {
+    setModalOpenCampaign(state => !state);
+  }, []);
+
+  const handleEditCampaign = useCallback(
+    async (id: string, campaign: Campaign) => {
+      const parsedDateBegin = parseISO(campaign.dateBegin);
+      const parsedDateEnd = parseISO(campaign.dateEnd);
+
+      const transformedCampaign = {
+        title: campaign.title,
+        description: campaign.description,
+        dateBegin: format(parsedDateBegin, 'yyyy-MM-dd'),
+        dateEnd: format(parsedDateEnd, 'yyyy-MM-dd'),
+      };
+
+      setEditingCampaign(transformedCampaign);
+
+      toggleModalCampaign();
+    },
+    [toggleModalCampaign],
+  );
+
+  const handleUpdateCampaign = useCallback(
+    async (campaign: EditingCampaignFormData) => {
+      await updateCampaign(id, campaign);
+    },
+    [updateCampaign, id],
+  );
 
   const handleEditAction = useCallback(
     (index: number, action: CampaignAction) => {
@@ -107,143 +154,158 @@ const CampaignDetail: React.FC = () => {
   );
 
   return (
-    <>
+    <Layout title="Infinity War Campaign">
       <ModalEditAction
         isOpen={modalOpen}
         setIsOpen={toggleModal}
         editingAction={editingAction}
         handleUpdateAction={handleUpdateAction}
       />
-      <Layout title="Infinity War Campaign">
-        <Container>
-          <GoBack url="/campaigns" />
+      <ModalEditCampaign
+        isOpen={modalOpenCampaign}
+        setIsOpen={toggleModalCampaign}
+        editingCampaign={editingCampaign}
+        handleUpdateCampaign={handleUpdateCampaign}
+      />
+      <Container>
+        <GoBack url="/campaigns" />
 
-          {loading && <Loader />}
+        {loading && <Loader />}
 
-          {_.isEmpty(campaign) && !loading && (
-            <NoData text="Campaign not found" />
-          )}
+        {_.isEmpty(campaign) && !loading && (
+          <NoData text="Campaign not found" />
+        )}
 
-          {!_.isEmpty(campaign) && !loading && (
-            <Content>
-              <div className="left">
-                <TitleContainer>
-                  <TypoHeadline4>{campaign.title}</TypoHeadline4>
+        {!_.isEmpty(campaign) && !loading && (
+          <Content>
+            <div className="left">
+              <TitleContainer>
+                <TypoHeadline4>
+                  <InnerTextTitle>{campaign.title}</InnerTextTitle>
+                  <EditContainer
+                    onClick={() => handleEditCampaign(campaign._id, campaign)}
+                  >
+                    <TypoSubtitle1>Edit</TypoSubtitle1>
+                  </EditContainer>
+                </TypoHeadline4>
+                <TextInfo gutterTop>
+                  <TypoBody1>
+                    Created on{' '}
+                    {formatDate(campaign.createdAt, "MMM'.' dd',' yyyy")}
+                  </TypoBody1>
+                </TextInfo>
+              </TitleContainer>
+
+              <div className="group">
+                <TypoBody2>
+                  <strong>Description</strong>
+                </TypoBody2>
+                <TextInfo gutterTop>
+                  <TypoBody1>{campaign.description}</TypoBody1>
+                </TextInfo>
+              </div>
+
+              <div className="group">
+                <TypoBody2>
+                  <strong>Schedule</strong>
+                </TypoBody2>
+                <TextInfo gutterTop>
+                  <TypoBody1>
+                    {formatDate(campaign.dateBegin, "MMM'.' dd',' yyyy")} -{' '}
+                    {formatDate(campaign.dateEnd, "MMM'.' dd',' yyyy")}
+                  </TypoBody1>
+                </TextInfo>
+              </div>
+
+              <div className="group">
+                <TypoBody2>
+                  <strong>Actions</strong>
+                </TypoBody2>
+                {!campaign.actions.length && (
                   <TextInfo gutterTop>
-                    <TypoBody1>
-                      Created on {formatDate(campaign.createdAt)}
-                    </TypoBody1>
+                    <TypoBody1>No actions added yet.</TypoBody1>
                   </TextInfo>
-                </TitleContainer>
+                )}
 
-                <div className="group">
-                  <TypoBody2>
-                    <strong>Description</strong>
-                  </TypoBody2>
-                  <TextInfo gutterTop>
-                    <TypoBody1>{campaign.description}</TypoBody1>
-                  </TextInfo>
-                </div>
-
-                <div className="group">
-                  <TypoBody2>
-                    <strong>Schedule</strong>
-                  </TypoBody2>
-                  <TextInfo gutterTop>
-                    <TypoBody1>
-                      {formatDate(campaign.dateBegin)} -{' '}
-                      {formatDate(campaign.dateEnd)}
-                    </TypoBody1>
-                  </TextInfo>
-                </div>
-
-                <div className="group">
-                  <TypoBody2>
-                    <strong>Actions</strong>
-                  </TypoBody2>
-                  {!campaign.actions.length && (
-                    <TextInfo gutterTop>
-                      <TypoBody1>No actions added yet.</TypoBody1>
-                    </TextInfo>
-                  )}
-
-                  {campaign.actions.length > 0 && (
-                    <TableContainer noGutterStart>
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th style={{ width: 90 }} />
+                {campaign.actions.length > 0 && (
+                  <TableContainer>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Title</th>
+                          <th>Description</th>
+                          <th>Start Date</th>
+                          <th>End Date</th>
+                          <th style={{ width: 90 }} />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {campaign.actions.map((action, index) => (
+                          <tr key={index}>
+                            <td>{action.title}</td>
+                            <td>{action.description}</td>
+                            <td>{formatDate(action.dateBegin, 'MM/dd/yy')}</td>
+                            <td>{formatDate(action.dateEnd, 'MM/dd/yy')}</td>
+                            <td align="right">
+                              <button
+                                onClick={() => handleEditAction(index, action)}
+                                type="button"
+                              >
+                                <MdEdit size={24} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteAction(index)}
+                                type="button"
+                              >
+                                <MdDelete size={24} />
+                              </button>
+                            </td>
                           </tr>
-                        </thead>
-                        <tbody>
-                          {campaign.actions.map((action, index) => (
-                            <tr key={index}>
-                              <td>{action.title}</td>
-                              <td>{action.description}</td>
-                              <td>{formatGridDate(action.dateBegin)}</td>
-                              <td>{formatGridDate(action.dateEnd)}</td>
-                              <td align="right">
-                                <button
-                                  onClick={() => {
-                                    return handleEditAction(index, action);
-                                  }}
-                                  type="button"
-                                >
-                                  <MdEdit size={24} />
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteAction(index)}
-                                  type="button"
-                                >
-                                  <MdDelete size={24} />
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </TableContainer>
-                  )}
-                </div>
+                        ))}
+                      </tbody>
+                    </table>
+                    <CountData>
+                      <TypoBody2>
+                        <strong>{campaign.actions.length} Action(s)</strong>
+                      </TypoBody2>
+                    </CountData>
+                  </TableContainer>
+                )}
+              </div>
 
-                <div className="group">
-                  <Link to="/campaigns">
-                    <Button outlined>Save and exit</Button>
+              <div className="group">
+                <Link to="/campaigns">
+                  <Button outlined>Save and exit</Button>
+                </Link>
+                <div className="containerBtnAddAction">
+                  <Link to={`/campaigns/${id}/new-action`}>
+                    <Button>Add action</Button>
                   </Link>
-                  <div className="containerBtnAddAction">
-                    <Link to={`/campaigns/${id}/new-action`}>
-                      <Button>Add action</Button>
-                    </Link>
-                  </div>
                 </div>
               </div>
-              {campaign.imgUrl && (
-                <div className="right">
-                  <Image htmlFor="fileImage">
-                    <figure>
-                      <img src={campaign.imgUrl} alt={campaign.title} />
-                    </figure>
-                    <input
-                      type="file"
-                      accept="image/png,image/jpg,image/jpeg"
-                      id="fileImage"
-                      onChange={handleImageChange}
-                    />
-                    <div className="btn">
-                      <TypoButton>Change image</TypoButton>
-                    </div>
-                  </Image>
-                </div>
-              )}
-            </Content>
-          )}
-        </Container>
-      </Layout>
-    </>
+            </div>
+            {campaign.imgUrl && (
+              <div className="right">
+                <Image htmlFor="fileImage">
+                  <figure>
+                    <img src={campaign.imgUrl} alt={campaign.title} />
+                  </figure>
+                  <input
+                    type="file"
+                    accept="image/png,image/jpg,image/jpeg"
+                    id="fileImage"
+                    onChange={handleImageChange}
+                  />
+                  <div className="btn">
+                    <MdCreate size={24} />
+                  </div>
+                </Image>
+              </div>
+            )}
+          </Content>
+        )}
+      </Container>
+    </Layout>
   );
 };
 

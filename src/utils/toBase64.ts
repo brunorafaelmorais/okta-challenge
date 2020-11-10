@@ -1,4 +1,4 @@
-export default function toBase64(file: File): Promise<unknown> {
+const toBase64 = (file: File): Promise<unknown> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
@@ -6,4 +6,6 @@ export default function toBase64(file: File): Promise<unknown> {
     reader.onload = () => resolve(reader.result);
     reader.onerror = error => reject(error);
   });
-}
+};
+
+export default toBase64;

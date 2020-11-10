@@ -15,20 +15,10 @@ export const ContainerField = styled.div<ContainerFieldProps>`
     dateRange &&
     css`
       display: flex;
-      flex: 0 1 auto;
+      justify-content: space-between;
 
       > div {
-        flex-grow: 1;
-        flex-basis: 0;
-        max-width: 100%;
-      }
-
-      > div:first-child {
-        margin-right: 8px;
-      }
-
-      > div:last-child {
-        margin-left: 8px;
+        width: calc(50% - 8px);
       }
     `}
 `;
