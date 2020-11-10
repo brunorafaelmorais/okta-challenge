@@ -2,7 +2,6 @@ import React, { useCallback, useRef } from 'react';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import { Form } from '@unform/web';
 import { useHistory } from 'react-router-dom';
-import { parseISO, isBefore } from 'date-fns';
 import * as Yup from 'yup';
 
 import Input from '../../components/Input';
@@ -16,6 +15,7 @@ import ImageInput from '../../components/ImageInput';
 import TitlePage from '../../components/TitlePage';
 import GoBack from '../../components/GoBack';
 import { useCampaign } from '../../hooks/campaign';
+import isValidRangeDate from '../../utils/validadeRangeDate';
 
 export interface FormDataCampaign {
   imgUrl: File;
@@ -50,10 +50,7 @@ const NewCampaign: React.FC = () => {
           abortEarly: false,
         });
 
-        const parsedDateBegin = parseISO(data.dateBegin);
-        const parsedDateEnd = parseISO(data.dateEnd);
-
-        if (isBefore(parsedDateEnd, parsedDateBegin)) {
+        if (!isValidRangeDate(data.dateBegin, data.dateEnd)) {
           addToast({
             type: 'warning',
             title: 'Warning',

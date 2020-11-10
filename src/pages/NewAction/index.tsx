@@ -3,7 +3,6 @@ import { useParams, useHistory } from 'react-router-dom';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
-import { parseISO, isBefore } from 'date-fns';
 
 import { ContainerButtons, ContainerField, Container } from './styles';
 import Layout from '../../components/Layout';
@@ -15,6 +14,7 @@ import Textarea from '../../components/Textarea';
 import GoBack from '../../components/GoBack';
 import { useToast } from '../../hooks/toast';
 import { useCampaign } from '../../hooks/campaign';
+import isValidRangeDate from '../../utils/validadeRangeDate';
 
 interface ParamTypes {
   id: string;
@@ -55,10 +55,7 @@ const NewAction: React.FC = () => {
           abortEarly: false,
         });
 
-        const parsedDateBegin = parseISO(data.dateBegin);
-        const parsedDateEnd = parseISO(data.dateEnd);
-
-        if (isBefore(parsedDateEnd, parsedDateBegin)) {
+        if (!isValidRangeDate(data.dateBegin, data.dateEnd)) {
           addToast({
             type: 'warning',
             title: 'Warning',

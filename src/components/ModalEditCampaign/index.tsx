@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
-import { parseISO, isBefore } from 'date-fns';
 
 import { FormDataCampaign } from '../../pages/NewCampaign';
 import Modal, { ModalProps } from '../Modal';
@@ -13,6 +12,7 @@ import Input from '../Input';
 import TitlePage from '../TitlePage';
 import Textarea from '../Textarea';
 import Button from '../Button';
+import isValidRangeDate from '../../utils/validadeRangeDate';
 
 export type EditingCampaignFormData = Omit<FormDataCampaign, 'imgUrl'>;
 
@@ -51,10 +51,7 @@ const ModalEditCampaign: React.FC<ModalEditCampaignProps> = ({
           abortEarly: false,
         });
 
-        const parsedDateBegin = parseISO(data.dateBegin);
-        const parsedDateEnd = parseISO(data.dateEnd);
-
-        if (isBefore(parsedDateEnd, parsedDateBegin)) {
+        if (!isValidRangeDate(data.dateBegin, data.dateEnd)) {
           addToast({
             type: 'warning',
             title: 'Warning',
