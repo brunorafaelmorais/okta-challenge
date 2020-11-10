@@ -12,6 +12,7 @@ import api from '../services/api';
 import { useToast } from './toast';
 import toBase64 from '../utils/toBase64';
 import showStatus from '../utils/showStatus';
+import totalCampaignsByStatus from '../utils/totalCampaignsByStatus';
 
 interface CampaignDTO {
   imgUrl: File;
@@ -46,16 +47,15 @@ export const CampaignProvider: React.FC = ({ children }) => {
   const totalAllCampaigns = useMemo(() => allCampaigns.length, [allCampaigns]);
 
   const totalScheduleCampaigns = useMemo(() => {
-    return allCampaigns.filter(campaign => campaign.status === 'Schedule')
-      .length;
+    return totalCampaignsByStatus('Schedule', allCampaigns);
   }, [allCampaigns]);
 
   const totalLiveCampaigns = useMemo(() => {
-    return allCampaigns.filter(campaign => campaign.status === 'Live').length;
+    return totalCampaignsByStatus('Live', allCampaigns);
   }, [allCampaigns]);
 
   const totalClosesCampaigns = useMemo(() => {
-    return allCampaigns.filter(campaign => campaign.status === 'Closed').length;
+    return totalCampaignsByStatus('Closed', allCampaigns);
   }, [allCampaigns]);
 
   const { addToast } = useToast();
