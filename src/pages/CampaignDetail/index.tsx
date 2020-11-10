@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import _ from 'lodash';
 import { MdDelete, MdEdit, MdCreate } from 'react-icons/md';
 import Swal from 'sweetalert2';
-import { parseISO, format } from 'date-fns';
 
 import Layout from '../../components/Layout';
 import {
@@ -68,14 +67,11 @@ const CampaignDetail: React.FC = () => {
 
   const handleEditCampaign = useCallback(
     async (id: string, campaign: Campaign) => {
-      const parsedDateBegin = parseISO(campaign.dateBegin);
-      const parsedDateEnd = parseISO(campaign.dateEnd);
-
       const transformedCampaign = {
         title: campaign.title,
         description: campaign.description,
-        dateBegin: format(parsedDateBegin, 'yyyy-MM-dd'),
-        dateEnd: format(parsedDateEnd, 'yyyy-MM-dd'),
+        dateBegin: formatDate(campaign.dateBegin, 'yyyy-MM-dd'),
+        dateEnd: formatDate(campaign.dateEnd, 'yyyy-MM-dd'),
       };
 
       setEditingCampaign(transformedCampaign);
