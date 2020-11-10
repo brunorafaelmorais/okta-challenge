@@ -45,6 +45,10 @@ const Campaigns: React.FC = () => {
   );
 
   useEffect(() => {
+    const date = '2020-11-12T00:00:00.000Z';
+
+    console.log(formatDate(date, 'MM dd yyyy'));
+
     getAllCampaigns();
   }, [addToast, getAllCampaigns]);
 
