@@ -199,8 +199,8 @@ const Campaigns: React.FC = () => {
                     return true;
                   }
                 })
-                .map((campaign, index) => (
-                  <tr key={`campaign-${index}`}>
+                .map(campaign => (
+                  <tr key={campaign._id}>
                     <td>{campaign.title}</td>
                     <td>{formatDate(campaign.dateBegin, 'MM/dd/yy')}</td>
                     <td>{formatDate(campaign.dateEnd, 'MM/dd/yy')}</td>
