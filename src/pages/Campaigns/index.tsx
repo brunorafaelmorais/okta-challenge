@@ -173,10 +173,6 @@ const Campaigns: React.FC = () => {
         <NoData text="No records to show" />
       )}
 
-      {!filteredCampaigns.length && !loading && (
-        <NoData text="No records to show" />
-      )}
-
       {filteredCampaigns.length > 0 && (
         <TableContainer>
           <table>
