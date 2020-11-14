@@ -102,3 +102,8 @@ export const Tab = styled.nav`
     color: ${({ theme }) => theme.colors.primary};
   }
 `;
+
+export const CountData = styled.div`
+  border-top: 1px solid #dee2e6;
+  padding: 0.75rem;
+`;

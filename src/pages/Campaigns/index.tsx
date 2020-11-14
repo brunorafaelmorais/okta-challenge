@@ -8,8 +8,8 @@ import clsx from 'clsx';
 import { useToast } from '../../hooks/toast';
 import Layout from '../../components/Layout';
 import { TableContainer } from '../../components/TableContainer';
-import { TitleInfos, Tab } from './styles';
-import { TypoHeadline4 } from '../../components/Typography';
+import { TitleInfos, Tab, CountData } from './styles';
+import { TypoBody2, TypoHeadline4 } from '../../components/Typography';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';
 import NoData from '../../components/NoData';
@@ -173,6 +173,10 @@ const Campaigns: React.FC = () => {
         <NoData text="No records to show." />
       )}
 
+      {!filteredCampaigns.length && !loading && (
+        <NoData text="No records to show" />
+      )}
+
       {filteredCampaigns.length > 0 && (
         <TableContainer>
           <table>
@@ -233,6 +237,11 @@ const Campaigns: React.FC = () => {
                 ))}
             </tbody>
           </table>
+          <CountData>
+            <TypoBody2>
+              <strong>{filteredCampaigns.length} Campaign(s)</strong>
+            </TypoBody2>
+          </CountData>
         </TableContainer>
       )}
     </Layout>
